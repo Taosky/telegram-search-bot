@@ -1,8 +1,6 @@
 # coding: utf-8
 TOKEN = 'xxxxxxx'
 
-TIEBA_AUTHORS = []
-
 GROUP_ID = -123123
 
 DATABASE = {

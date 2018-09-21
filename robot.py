@@ -4,7 +4,6 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CommandHandler, Updater, MessageHandler, Filters, CallbackQueryHandler
 import config
 import logging
-from tieba import get_update_post
 from database import insert_db, search_db, get_document
 
 updater = Updater(token=config.TOKEN)
@@ -91,12 +90,6 @@ def locate_message(bot, update):
                          text=text, disable_notification=True)
 
 
-def tieba_monitor(bot, job):
-    for post in get_update_post():
-        bot.send_message(chat_id=config.GROUP_ID,
-                         text='"{}" 发布帖子: "{}".\n{}'.format(post['author'], post['title'], post['url']))
-
-
 if __name__ == '__main__':
     # get chat id
     dispatcher.add_handler(CommandHandler('chatid', get_chat_id))
@@ -106,9 +99,7 @@ if __name__ == '__main__':
     dispatcher.add_handler(CommandHandler('search', search_message, pass_args=True))
     # search callback to locate message
     dispatcher.add_handler(CallbackQueryHandler(locate_message))
-    # 贴吧更新提醒
-    job.run_repeating(tieba_monitor, interval=60, first=0)
     updater.start_polling()
 
     # updater.start_webhook(listen='127.0.0.1', port=8321, url_path=TOKEN)
-    # updater.bot.set_webhook('https://api.mou.science/telegram/' + TOKEN)
+    # updater.bot.set_webhook('https://telegram.xxx.xx/' + TOKEN)
