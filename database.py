@@ -60,12 +60,12 @@ def search_db(text, page=1):
 def get_document(msg_id):
     db = pymysql.connect(**DATABASE)
     cursor = db.cursor()
-    sql = "SELECT content, time FROM group_message WHERE id={}".format(msg_id)
+    sql = "SELECT content,user, time FROM group_message WHERE id={}".format(msg_id)
 
     try:
         cursor.execute(sql)
         message = cursor.fetchall()[0]
-        result = {'text': message[0], 'time': message[1]}
+        result = {'text': message[0], 'user': message[1], 'time': message[2]}
 
     except:
         result = None

@@ -1,6 +1,10 @@
 # coding: utf-8
+import functools
 import math
+import time
+from threading import Thread
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.error import BadRequest
 from telegram.ext import CommandHandler, Updater, MessageHandler, Filters, CallbackQueryHandler
 import config
 import logging
@@ -23,8 +27,27 @@ def build_menu(buttons, n_cols, header_buttons=None, footer_buttons=None):
     return menu
 
 
+def delay_delete(bot, chat_id, message_id):
+    time.sleep(config.SENT_DELETE_DELAY)
+    bot.delete_message(chat_id=chat_id, message_id=message_id)
+
+
+def auto_delete(fn):
+    @functools.wraps(fn)
+    def wrapper(*args, **kw):
+        bot = args[0]
+        sent_message = fn(*args, **kw)
+        Thread(target=delay_delete, args=[bot, sent_message.chat_id, sent_message.message_id]).start()
+        return sent_message
+
+    return wrapper
+
+
+@auto_delete
 def get_chat_id(bot, update):
-    bot.send_message(chat_id=update.message.chat_id, text="This chat id: {}".format(update.message.chat_id))
+    sent_message = bot.send_message(chat_id=update.message.chat_id,
+                                    text="This chat id: {}".format(update.message.chat_id))
+    return sent_message
 
 
 def store_message(bot, update):
@@ -33,6 +56,7 @@ def store_message(bot, update):
                   update.message.date.strftime("%Y-%m-%d %H:%M:%S"))
 
 
+@auto_delete
 def search_message(bot, update, args):
     keyword = args[0]
     page = int(args[1]) if len(args) > 1 else 1
@@ -66,28 +90,46 @@ def search_message(bot, update, args):
     reply_markup = InlineKeyboardMarkup(build_menu(button_list, n_cols=1, footer_buttons=pager))
 
     # send search result
-    bot.send_message(chat_id=config.GROUP_ID,
-                     text='Page {} of {} \t Total {} messages.'.format(page, math.ceil(count / config.SEARCH_PAGE_SIZE),
-                                                                       count),
-                     reply_markup=reply_markup)
+    sent_message = bot.send_message(chat_id=config.GROUP_ID,
+                                    text='Page {} of {} \t Total {} messages.'.format(page, math.ceil(
+                                        count / config.SEARCH_PAGE_SIZE), count),
+                                    reply_markup=reply_markup)
+    return sent_message
 
 
+@auto_delete
 def locate_message(bot, update):
     query = update.callback_query
     args = query.data.split(' ')[1:]
     # change page
     if query.data.startswith('/search'):
         search_message(bot, query, args=args)
+
     # locate message
     elif query.data.startswith('/locate'):
         msg_id = int(args[0])
         target_message = get_document(msg_id)
         if target_message:
-            text = 'At: {}\nContent: "{}"'.format(target_message['time'], target_message['text'])
+            text = 'At: {}\nContent:\n "{}"'.format(target_message['time'], target_message['text'])
         else:
-            text = 'Database Error'
-        bot.send_message(chat_id=config.GROUP_ID, reply_to_message_id=msg_id,
-                         text=text, disable_notification=True)
+            text = 'Unknown Error!'
+        sent_message = bot.send_message(chat_id=config.GROUP_ID, reply_to_message_id=msg_id,
+                                        text=text, disable_notification=True)
+        return sent_message
+
+
+@auto_delete
+def show_deleted_message(bot, update):
+    text = 'Message has been deleted!'
+    sent_message = bot.send_message(chat_id=config.GROUP_ID, text=text, disable_notification=True)
+    return sent_message
+
+
+def error_callback(bot, update, error):
+    try:
+        raise error
+    except BadRequest:
+        show_deleted_message(bot, update)
 
 
 if __name__ == '__main__':
@@ -99,6 +141,8 @@ if __name__ == '__main__':
     dispatcher.add_handler(CommandHandler('search', search_message, pass_args=True))
     # search callback to locate message
     dispatcher.add_handler(CallbackQueryHandler(locate_message))
+
+    dispatcher.add_error_handler(error_callback)
     updater.start_polling()
 
     # updater.start_webhook(listen='127.0.0.1', port=8321, url_path=TOKEN)
