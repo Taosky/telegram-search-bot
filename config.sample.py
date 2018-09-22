@@ -14,3 +14,6 @@ DATABASE = {
 
 SEARCH_PAGE_SIZE = 5
 SENT_DELETE_DELAY = 60
+
+# Hide mode will disable auto delete except locate message
+HIDE_MODE = True

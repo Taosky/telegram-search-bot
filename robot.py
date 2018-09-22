@@ -1,46 +1,19 @@
 # coding: utf-8
-import functools
 import math
-import time
-from threading import Thread
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.error import BadRequest
 from telegram.ext import CommandHandler, Updater, MessageHandler, Filters, CallbackQueryHandler
 import config
 import logging
 from database import insert_db, search_db, get_document
+from utils import auto_delete, build_menu
 
 updater = Updater(token=config.TOKEN)
 dispatcher = updater.dispatcher
 job = updater.job_queue
 
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=logging.ERROR,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-
-def build_menu(buttons, n_cols, header_buttons=None, footer_buttons=None):
-    menu = [buttons[i:i + n_cols] for i in range(0, len(buttons), n_cols)]
-    if header_buttons:
-        menu.insert(0, header_buttons)
-    if footer_buttons:
-        menu.append(footer_buttons)
-    return menu
-
-
-def delay_delete(bot, chat_id, message_id):
-    time.sleep(config.SENT_DELETE_DELAY)
-    bot.delete_message(chat_id=chat_id, message_id=message_id)
-
-
-def auto_delete(fn):
-    @functools.wraps(fn)
-    def wrapper(*args, **kw):
-        bot = args[0]
-        sent_message = fn(*args, **kw)
-        Thread(target=delay_delete, args=[bot, sent_message.chat_id, sent_message.message_id]).start()
-        return sent_message
-
-    return wrapper
 
 
 @auto_delete
@@ -57,19 +30,28 @@ def store_message(bot, update):
 
 
 @auto_delete
-def search_message(bot, update, args):
+def search_message(bot, update=None, args=None):
+    if not args:
+        args = ['search', '1']
+    elif len(args) == 1:
+        args.append('1')
+    # page changing has no update
+    chat_id = update.message.chat_id if update else args[2]
+    # hide mode disable group call
+    if config.HIDE_MODE and config.GROUP_ID == chat_id:
+        return
     keyword = args[0]
-    page = int(args[1]) if len(args) > 1 else 1
+    page = int(args[1])
 
     messages, count = search_db(keyword, page)
     if count == 0:
-        bot.send_message(chat_id=config.GROUP_ID,
-                         text='No search result.', disable_notification=True)
-        return
+        sent_message = bot.send_message(chat_id=chat_id,
+                                        text='No search result.', disable_notification=True)
+        return sent_message
     elif count == -1:
-        bot.send_message(chat_id=config.GROUP_ID,
-                         text='Search Error.', disable_notification=True)
-        return
+        sent_message = bot.send_message(chat_id=chat_id,
+                                        text='Search Error.', disable_notification=True)
+        return sent_message
 
     # result button list
     button_list = [
@@ -79,9 +61,11 @@ def search_message(bot, update, args):
             callback_data='/locate {}'.format(message['id'])) for message in messages
     ]
     prev_button = InlineKeyboardButton('Prev Page',
-                                       callback_data='/search {} {}'.format(keyword, page - 1)) if page > 1 else None
-    next_button = InlineKeyboardButton('Next Page', callback_data='/search {} {}'
-                                       .format(keyword, page + 1)) if page * config.SEARCH_PAGE_SIZE < count else None
+                                       callback_data='/search {} {} {}'.format(keyword, page - 1,
+                                                                               chat_id)) if page > 1 else None
+    next_button = InlineKeyboardButton('Next Page', callback_data='/search {} {} {}'
+                                       .format(keyword, page + 1,
+                                               chat_id)) if page * config.SEARCH_PAGE_SIZE < count else None
     pager = []
     if prev_button:
         pager.append(prev_button)
@@ -90,7 +74,7 @@ def search_message(bot, update, args):
     reply_markup = InlineKeyboardMarkup(build_menu(button_list, n_cols=1, footer_buttons=pager))
 
     # send search result
-    sent_message = bot.send_message(chat_id=config.GROUP_ID,
+    sent_message = bot.send_message(chat_id=chat_id,
                                     text='Page {} of {} \t Total {} messages.'.format(page, math.ceil(
                                         count / config.SEARCH_PAGE_SIZE), count),
                                     reply_markup=reply_markup)
@@ -103,7 +87,7 @@ def locate_message(bot, update):
     args = query.data.split(' ')[1:]
     # change page
     if query.data.startswith('/search'):
-        search_message(bot, query, args=args)
+        search_message(bot, args=args)
 
     # locate message
     elif query.data.startswith('/locate'):
@@ -121,7 +105,7 @@ def locate_message(bot, update):
 @auto_delete
 def show_deleted_message(bot, update):
     text = 'Message has been deleted!'
-    sent_message = bot.send_message(chat_id=config.GROUP_ID, text=text, disable_notification=True)
+    sent_message = bot.send_message(chat_id=update.message.chat_id, text=text, disable_notification=True)
     return sent_message
 
 
@@ -143,7 +127,11 @@ if __name__ == '__main__':
     dispatcher.add_handler(CallbackQueryHandler(locate_message))
 
     dispatcher.add_error_handler(error_callback)
-    updater.start_polling()
 
-    # updater.start_webhook(listen='127.0.0.1', port=8321, url_path=TOKEN)
-    # updater.bot.set_webhook('https://telegram.xxx.xx/' + TOKEN)
+    # polling
+    # updater.start_polling()
+
+    # Webhook
+    updater.start_webhook(listen='127.0.0.1', port=8321, url_path='TOKEN')
+    updater.bot.set_webhook(url='https://telegram.xxx.xx/TOKEN')
+    updater.idle()
