@@ -1,6 +1,6 @@
 # coding: utf-8
 
-BOT_ID = 'whatever_repeat_bot'
+BOT_ID = 'your_bot'
 
 TOKEN = 'xxxxxxx'
 
