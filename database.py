@@ -1,8 +1,6 @@
 # coding: utf-8
 import pymysql
-from config import DATABASE
-from config import SEARCH_PAGE_SIZE
-
+from config import DATABASE, SEARCH_PAGE_SIZE
 
 def init_db():
     db = pymysql.connect(**DATABASE)

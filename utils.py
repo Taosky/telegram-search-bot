@@ -1,8 +1,15 @@
-import functools
-import time
-from threading import Thread
+import imp
+import os
 
+from telegram.error import BadRequest
+from threading import Thread
+import functools
 import config
+import time
+
+
+def package_contents(path_name):
+    return set([os.path.splitext(module)[0] for module in os.listdir(path_name) if module.endswith('.py')])
 
 
 def delay_delete(bot, chat_id, message_id):
@@ -30,3 +37,16 @@ def build_menu(buttons, n_cols, header_buttons=None, footer_buttons=None):
     if footer_buttons:
         menu.append(footer_buttons)
     return menu
+
+
+@auto_delete
+def send_error_message(bot, update, text):
+    sent_message = bot.send_message(chat_id=update.message.chat_id, text=text, disable_notification=True)
+    return sent_message
+
+
+def error_callback(bot, update, error):
+    try:
+        raise error
+    except BadRequest:
+        send_error_message(bot, update)
