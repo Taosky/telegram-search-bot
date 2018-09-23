@@ -1,10 +1,11 @@
 from telegram.error import BadRequest
 from utils import auto_delete
+from config import GROUP_ID
 
 
 @auto_delete
 def send_error_message(bot, update, text):
-    sent_message = bot.send_message(chat_id=update.message.chat_id, text=text, disable_notification=True)
+    sent_message = bot.send_message(chat_id=GROUP_ID, text=text, disable_notification=True)
     return sent_message
 
 

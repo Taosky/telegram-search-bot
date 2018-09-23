@@ -1,13 +1,20 @@
 # coding: utf-8
+import logging
 import math
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 from telegram.ext import InlineQueryHandler
-from config import SEARCH_PAGE_SIZE
+from config import SEARCH_PAGE_SIZE, GROUP_ID
 from database import search_db
 import re
 
 
 def inline_caps(bot, update):
+    from_user_id = update.inline_query.from_user.id
+    try:
+        bot.get_chat_member(chat_id=GROUP_ID, user_id=from_user_id)
+    except:
+        return
+
     query = update.inline_query.query
     if not query:
         return
