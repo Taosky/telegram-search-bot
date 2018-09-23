@@ -1,4 +1,6 @@
 # coding: utf-8
+import logging
+
 import pymysql
 from config import DATABASE, SEARCH_PAGE_SIZE
 
@@ -41,21 +43,22 @@ def search_db(text=None, page=1):
             text, (page - 1) * SEARCH_PAGE_SIZE, SEARCH_PAGE_SIZE)
         count_sql = "SELECT count(id) FROM group_message WHERE locate('{}',content)".format(text)
     else:
-        search_sql = "SELECT * FROM group_messageORDER BY time DESC LIMIT {}, {}".format((page - 1) * SEARCH_PAGE_SIZE,
-                                                                                         SEARCH_PAGE_SIZE)
+        search_sql = "SELECT * FROM group_message ORDER BY time DESC LIMIT {}, {}".format((page - 1) * SEARCH_PAGE_SIZE,
+                                                                                          SEARCH_PAGE_SIZE)
         count_sql = "SELECT count(id) FROM group_message"
 
     try:
         cursor.execute(count_sql)
         count = cursor.fetchall()[0][0]
-        if count <= (page-1) * SEARCH_PAGE_SIZE:
+        if count <= (page - 1) * SEARCH_PAGE_SIZE:
             result = []
         else:
             cursor.execute(search_sql)
             messages = cursor.fetchall()
             result = [{'id': row[0], 'user': row[1], 'text': row[2], 'time': row[3]} for row in messages]
 
-    except:
+    except BaseException as e:
+        logging.log(logging.DEBUG, e)
         result = []
         count = -1
 

@@ -16,12 +16,13 @@ def inline_caps(bot, update):
 
     query = update.inline_query.query
     if not query:
-        return
-    re_match = re.match('(.*) (\d+)', query)
-    if re_match:
-        keyword, page = re_match.group(1), int(re_match.group(2))
+        keyword, page = None, 1
     else:
-        keyword, page = query, 1
+        re_match = re.match('(.*) (\d+)', query)
+        if re_match:
+            keyword, page = re_match.group(1), int(re_match.group(2))
+        else:
+            keyword, page = query, 1
     messages, count = search_db(keyword, page)
     results = [InlineQueryResultArticle(
         id='info',
