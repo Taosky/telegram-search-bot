@@ -1,17 +1,12 @@
 # coding: utf-8
 from telegram.ext import CommandHandler
-import config
 from database import get_document
-from utils import auto_delete
+from utils import auto_delete, delete_prev_message
 
 
 @auto_delete
 def locate_message(bot, update, args):
-    if config.ADMIN:
-        prev_msg_id = update.message.message_id
-        prev_msg_chat_id = update.message.chat_id
-        bot.delete_message(chat_id=prev_msg_chat_id, message_id=prev_msg_id)
-
+    delete_prev_message(bot, update)
     if args and args[0].isdigit():
         msg_id = int(args[0])
     else:

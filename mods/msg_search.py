@@ -1,5 +1,4 @@
 # coding: utf-8
-import logging
 import math
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 from telegram.ext import InlineQueryHandler
@@ -27,9 +26,7 @@ def inline_caps(bot, update):
     results = [InlineQueryResultArticle(
         id='info',
         title='Total:{}. Page {} of {}'.format(count, page, math.ceil(count / SEARCH_PAGE_SIZE)),
-        input_message_content=InputTextMessageContent(
-            'Enter `@{bot name} {keyword} {page}` to *choose page*.',
-            parse_mode='markdown')
+        input_message_content=InputTextMessageContent('/help')
     )]
     for message in messages:
         results.append(
@@ -40,7 +37,7 @@ def inline_caps(bot, update):
                 input_message_content=InputTextMessageContent('/locate {}'.format(message['id']))
             )
         )
-        bot.answer_inline_query(update.inline_query.id, results)
+    bot.answer_inline_query(update.inline_query.id, results)
 
 
 handler = InlineQueryHandler(inline_caps)
