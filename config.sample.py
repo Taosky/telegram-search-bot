@@ -1,4 +1,7 @@
 # coding: utf-8
+
+BOT_ID = 'whatever_repeat_bot'
+
 TOKEN = 'xxxxxxx'
 
 GROUP_ID = -123123
