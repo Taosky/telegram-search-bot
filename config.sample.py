@@ -12,8 +12,8 @@ DATABASE = {
     'charset': 'utf8mb4',
 }
 
-SEARCH_PAGE_SIZE = 5
-SENT_DELETE_DELAY = 60
+SEARCH_PAGE_SIZE = 10
 
-# Hide mode will disable auto delete except locate message
-HIDE_MODE = True
+# auto delete sent message, this will not delete your message via bot
+AUTO_DELETE = True
+SENT_DELETE_DELAY = 30

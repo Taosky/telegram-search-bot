@@ -2,6 +2,7 @@
 import pymysql
 from config import DATABASE, SEARCH_PAGE_SIZE
 
+
 def init_db():
     db = pymysql.connect(**DATABASE)
     cursor = db.cursor()
@@ -32,20 +33,27 @@ def insert_db(msg_id, msg_user, msg_text, msg_time):
     db.close()
 
 
-def search_db(text, page=1):
+def search_db(text=None, page=1):
     db = pymysql.connect(**DATABASE)
     cursor = db.cursor()
-    search_sql = "SELECT * FROM group_message WHERE locate('{}',content) ORDER BY time DESC LIMIT {}, {}".format(text, (
-            page - 1) * SEARCH_PAGE_SIZE, SEARCH_PAGE_SIZE)
-
-    count_sql = "SELECT count(id) FROM group_message WHERE locate('{}',content)".format(text)
+    if text:
+        search_sql = "SELECT * FROM group_message WHERE locate('{}',content) ORDER BY time DESC LIMIT {}, {}".format(
+            text, (page - 1) * SEARCH_PAGE_SIZE, SEARCH_PAGE_SIZE)
+        count_sql = "SELECT count(id) FROM group_message WHERE locate('{}',content)".format(text)
+    else:
+        search_sql = "SELECT * FROM group_messageORDER BY time DESC LIMIT {}, {}".format((page - 1) * SEARCH_PAGE_SIZE,
+                                                                                         SEARCH_PAGE_SIZE)
+        count_sql = "SELECT count(id) FROM group_message"
 
     try:
-        cursor.execute(search_sql)
-        messages = cursor.fetchall()
-        result = [{'id': row[0], 'user': row[1], 'text': row[2], 'time': row[3]} for row in messages]
         cursor.execute(count_sql)
         count = cursor.fetchall()[0][0]
+        if count <= (page-1) * SEARCH_PAGE_SIZE:
+            result = []
+        else:
+            cursor.execute(search_sql)
+            messages = cursor.fetchall()
+            result = [{'id': row[0], 'user': row[1], 'text': row[2], 'time': row[3]} for row in messages]
 
     except:
         result = []
