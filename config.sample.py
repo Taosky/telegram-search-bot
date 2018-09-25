@@ -19,4 +19,4 @@ SEARCH_PAGE_SIZE = 10
 
 # auto delete sent message, this will not delete your message via bot
 AUTO_DELETE = True
-SENT_DELETE_DELAY = 30
+SENT_DELETE_DELAY = 70

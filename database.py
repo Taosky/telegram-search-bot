@@ -81,3 +81,21 @@ def get_document(msg_id):
 
     db.close()
     return result
+
+
+def get_prev_document_id(msg_id):
+    db = pymysql.connect(**DATABASE)
+    cursor = db.cursor()
+    sql = "SELECT id FROM group_message WHERE id=(SELECT id FROM group_message WHERE id<{} order by id desc limit 1)".format(
+        msg_id)
+
+    try:
+        cursor.execute(sql)
+        message = cursor.fetchall()[0]
+        result = message[0]
+
+    except:
+        result = None
+
+    db.close()
+    return result
