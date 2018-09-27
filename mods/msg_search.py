@@ -15,10 +15,15 @@ def inline_caps(bot, update):
         return
 
     query = update.inline_query.query
+    # recent messages
     if not query:
         keyword, page = None, 1
+
+    elif re.match('\* +(\d+)', query):
+        keyword, page = None, int(re.match('\* +(\d+)', query).group(1))
+    # search messages
     else:
-        re_match = re.match('(.*) (\d+)', query)
+        re_match = re.match('(.*) +(\d+)', query)
         if re_match:
             keyword, page = re_match.group(1), int(re_match.group(2))
         else:
