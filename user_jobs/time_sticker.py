@@ -13,7 +13,7 @@ TIME_STICKERS = {
 def time_monitor(bot, job):
     now = time.localtime()
     if now.tm_min == 0 and now.tm_hour in TIME_STICKERS:
-        bot.send_sticker(chat_id=527716928,
+        bot.send_sticker(chat_id=config.GROUP_ID,
                          sticker=Sticker(file_id=TIME_STICKERS[now.tm_hour], width=376, height=376))
 
 
