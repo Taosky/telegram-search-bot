@@ -41,7 +41,7 @@ def len_non_ascii(data):
     return count
 
 
-def delete_prev_message(bot,update):
+def delete_prev_message(bot, update):
     if config.ADMIN:
         prev_msg_id = update.message.message_id
         prev_msg_chat_id = update.message.chat_id

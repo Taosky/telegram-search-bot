@@ -17,6 +17,9 @@ DATABASE = {
 
 SEARCH_PAGE_SIZE = 10
 
-# auto delete sent message, this will not delete your message via bot
+# 自动删除Bot发出的消息
 AUTO_DELETE = True
 SENT_DELETE_DELAY = 70
+
+# Bot须为管理员，自动删除查询语句
+ADMIN = True
