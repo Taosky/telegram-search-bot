@@ -5,9 +5,11 @@ import logging
 from user_handlers import custom_handlers
 from user_jobs import custom_jobs
 from user_handlers.__error_handle import error_callback
-
+from database import init_db
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+init_db()
 
 updater = Updater(token=config.TOKEN)
 dispatcher = updater.dispatcher

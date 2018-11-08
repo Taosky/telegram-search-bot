@@ -1,11 +1,14 @@
 # coding: utf-8
 import logging
+import os
 
 import pymysql
 from config import DATABASE, SEARCH_PAGE_SIZE
 
 
 def init_db():
+    if os.path.exists('.database'):
+        return
     db = pymysql.connect(**DATABASE)
     cursor = db.cursor()
 
@@ -20,6 +23,7 @@ def init_db():
     except:
         db.rollback()
     db.close()
+    open('.database', 'a').close()
 
 
 def insert_db(msg_id, msg_user, msg_text, msg_time):
