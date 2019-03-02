@@ -1,6 +1,6 @@
 # telegram-search-bot
 
-为了解决Telegram中文搜索问题而写的机器人，后面可能添加更多功能。
+为了解决Telegram中文搜索相关问题而写的机器人，可以称之为复读机，后面可能添加更多功能。
 
 ## Requirements
 - VPS/其他主机
@@ -12,7 +12,7 @@
 ## Usage
 0. 虚拟环境（可选）
 1. 安装依赖: `pip install -r requirements.txt`。
-2. 修改`config.py`，主要是配置`MySQL`数据库信息。
+2. 修改`config.py`。
 3. 轮询模式直接 `python robot.py`启动即可；如果需要Webhook模式，根据情况修改`robot.py`最后几行。
 
 ## Develop
@@ -21,6 +21,6 @@
 
 #### Jobs
 `user_jobs`中的模块用于实现定时任务（间隔运行，定时需手动判断），同上，添加`job_info`即可。
-
+ 
 
 

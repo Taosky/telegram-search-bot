@@ -1,25 +1,19 @@
 # coding: utf-8
 
-BOT_ID = 'your_bot'
-
+# BotFather提供的Token
 TOKEN = 'xxxxxxx'
 
-GROUP_ID = -123123
+GROUP_ID = -31415926
 
-DATABASE = {
-    'host': 'x.x.x.x',
-    'port': 3306,
-    'db': 'xxxx',
-    'user': 'root',
-    'password': 'xxxx',
-    'charset': 'utf8mb4',
-}
+# 排除ID列表
+EXCEPT_IDS = [123456, ]
 
+# 每页搜索结果数量
 SEARCH_PAGE_SIZE = 10
 
-# 自动删除Bot发出的消息
+# 一定时间自动撤回Bot发出的消息
 AUTO_DELETE = True
 SENT_DELETE_DELAY = 70
 
-# Bot须为管理员，自动删除查询语句
-ADMIN = True
+# 开启将自动删除查询语句，Bot须为管理员且具有撤回成员消息权限
+ADMIN = False

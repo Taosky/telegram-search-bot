@@ -5,11 +5,8 @@ import logging
 from user_handlers import custom_handlers
 from user_jobs import custom_jobs
 from user_handlers.__error_handle import error_callback
-from database import init_db
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-init_db()
 
 updater = Updater(token=config.TOKEN)
 dispatcher = updater.dispatcher
@@ -29,6 +26,7 @@ for job_info in custom_jobs:
 if __name__ == '__main__':
     # polling mode
     updater.start_polling()
+    updater.idle()
 
     # Webhook mode
     # updater.start_webhook(listen='127.0.0.1', port=12306, url_path='TOKEN')

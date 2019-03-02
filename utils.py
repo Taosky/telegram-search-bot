@@ -43,6 +43,23 @@ def len_non_ascii(data):
 
 def delete_prev_message(bot, update):
     if config.ADMIN:
+        bot_id = get_bot_id(bot)
+        # 检查权限
+        if not bot.get_chat_member(config.GROUP_ID, bot_id).can_delete_messages:
+            bot.send_message(
+                chat_id=config.GROUP_ID,
+                text='缺少撤回群员消息权限，如不提供请关闭此选项。',
+                disable_notification=True
+            )
+            return
         prev_msg_id = update.message.message_id
         prev_msg_chat_id = update.message.chat_id
         bot.delete_message(chat_id=prev_msg_chat_id, message_id=prev_msg_id)
+
+
+def get_bot_user_name(bot):
+    return bot.get_me().username
+
+
+def get_bot_id(bot):
+    return bot.get_me().id

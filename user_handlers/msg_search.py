@@ -3,12 +3,37 @@ import math
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 from telegram.ext import InlineQueryHandler
 from config import SEARCH_PAGE_SIZE, GROUP_ID
-from database import search_db
+from database import User, Message, DBSession
 import re
+
+
+def search_messages(keyword, page):
+    messages = []
+    start = (page - 1) * SEARCH_PAGE_SIZE
+    stop = page * SEARCH_PAGE_SIZE
+    session = DBSession()
+    count = session.query(Message).count()
+    if keyword:
+        query = session.query(Message).filter(Message.text.ilike('%{}%'.format(keyword))).order_by(
+            Message.date.desc()).slice(start, stop)
+    else:
+        query = session.query(Message).filter().order_by(Message.date.desc()).slice(start, stop)
+    for message in query.all():
+        user = session.query(User).filter_by(id=message.from_id).one()
+        user_fullname = user.fullname
+        if message.type != 'text':
+            msg_text = '[{}]'.format(message.type)
+        else:
+            msg_text = message.text
+        messages.append({'id': message.id, 'text': msg_text, 'date': message.date, 'user': user_fullname})
+
+    session.close()
+    return messages, count
 
 
 def inline_caps(bot, update):
     from_user_id = update.inline_query.from_user.id
+    # 检查是否为群成员
     try:
         bot.get_chat_member(chat_id=GROUP_ID, user_id=from_user_id)
     except:
@@ -19,7 +44,7 @@ def inline_caps(bot, update):
     if not query:
         keyword, page = None, 1
 
-    elif re.match('\* +(\d+)', query):
+    elif re.match(' *\* +(\d+)', query):
         keyword, page = None, int(re.match('\* +(\d+)', query).group(1))
     # search messages
     else:
@@ -28,7 +53,7 @@ def inline_caps(bot, update):
             keyword, page = re_match.group(1), int(re_match.group(2))
         else:
             keyword, page = query, 1
-    messages, count = search_db(keyword, page)
+    messages, count = search_messages(keyword, page)
     results = [InlineQueryResultArticle(
         id='info',
         title='Total:{}. Page {} of {}'.format(count, page, math.ceil(count / SEARCH_PAGE_SIZE)),
@@ -39,7 +64,7 @@ def inline_caps(bot, update):
             InlineQueryResultArticle(
                 id=message['id'],
                 title='{}'.format(message['text'][:100]),
-                description=message['time'].strftime("%Y-%m-%d").ljust(40) + message['user'],
+                description=message['date'].strftime("%Y-%m-%d").ljust(40) + message['user'],
                 input_message_content=InputTextMessageContent('/locate {}'.format(message['id']))
             )
         )
