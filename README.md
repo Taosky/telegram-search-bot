@@ -4,7 +4,6 @@
 
 ## Requirements
 - VPS/其他主机
-- MySQL
 - Python
 - Web Server （可选）
 
@@ -24,6 +23,9 @@
  
 
 ### Update
+
+#### 2019-03-03
+修复搜索的页码问题
 
 #### 2019-03-02
 - 重写了大量代码，更换MYSQL数据库为SQLITE，使用ORM，简化后续的开发及方便用户配置。

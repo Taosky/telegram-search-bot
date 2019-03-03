@@ -12,11 +12,12 @@ def search_messages(keyword, page):
     start = (page - 1) * SEARCH_PAGE_SIZE
     stop = page * SEARCH_PAGE_SIZE
     session = DBSession()
-    count = session.query(Message).count()
     if keyword:
+        count = session.query(Message).filter(Message.text.ilike('%{}%'.format(keyword))).count()
         query = session.query(Message).filter(Message.text.ilike('%{}%'.format(keyword))).order_by(
             Message.date.desc()).slice(start, stop)
     else:
+        count = session.query(Message).count()
         query = session.query(Message).filter().order_by(Message.date.desc()).slice(start, stop)
     for message in query.all():
         user = session.query(User).filter_by(id=message.from_id).one()
