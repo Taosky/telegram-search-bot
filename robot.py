@@ -5,10 +5,15 @@ import logging
 from user_handlers import custom_handlers
 from user_jobs import custom_jobs
 from user_handlers.__error_handle import error_callback
+
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-updater = Updater(token=config.TOKEN)
+if config.PROXY:
+    proxy_url = config.PROXY_URL
+    updater = Updater(token=config.TOKEN, request_kwargs={'proxy_url': proxy_url})
+else:
+    updater = Updater(token=config.TOKEN)
 dispatcher = updater.dispatcher
 job = updater.job_queue
 
