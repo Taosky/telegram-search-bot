@@ -52,8 +52,13 @@ def delete_prev_message(bot, update):
                 disable_notification=True
             )
             return
-        prev_msg_id = update.message.message_id
-        prev_msg_chat_id = update.message.chat_id
+        if not update.message:
+            prev_msg_id = update.callback_query.message.message_id
+            prev_msg_chat_id = update.callback_query.message.chat.id
+        else:
+            prev_msg_id = update.message.message_id
+            prev_msg_chat_id = update.message.chat_id
+
         bot.delete_message(chat_id=prev_msg_chat_id, message_id=prev_msg_id)
 
 

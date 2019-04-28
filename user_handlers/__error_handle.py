@@ -31,7 +31,7 @@ def send_error_message(bot, msg_id, parse_mode='markdown'):
                 msg.type: getattr(msg, msg.type),
             }
             send_msg_fun = getattr(bot, 'send_' + msg_method)
-            sent_message = send_msg_fun(chat_id=GROUP_ID, arse_mode=parse_mode, disable_notification=True,
+            sent_message = send_msg_fun(chat_id=GROUP_ID, parse_mode=parse_mode, disable_notification=True,
                                         caption=delete_tip_text, **content)
     else:
         sent_message = None
@@ -60,4 +60,4 @@ def error_callback(bot, update, error):
         elif e.message == "Message can't be deleted":
             pass
         else:
-            send_error_message(bot, text='!未知错误')
+            bot.send_message(bot, chat_id=GROUP_ID, text='!未知错误', disable_notification=True)
