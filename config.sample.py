@@ -3,6 +3,7 @@
 # BotFather提供的Token
 TOKEN = 'xxxxxxx'
 
+# 需要使用机器人的群（由于Inline Mode获取ID的问题，目前一个机器人只能用于一个群）
 GROUP_ID = -31415926
 
 # 排除ID列表
