@@ -33,6 +33,7 @@ def store_message(bot, update):
             or update.message.from_user.is_bot:
         return
     msg_id = update.message.message_id
+    msg_link= update.message.link if update.message.link else ''
     from_id = update.message.from_user.id
     msg_text = update.message.text if update.message.text else ''
     msg_video = update.message.video.file_id if update.message.video else ''
@@ -58,7 +59,7 @@ def store_message(bot, update):
     else:
         msg_type = 'unknown'
 
-    insert_message(msg_id, msg_text, msg_video, msg_photo, msg_audio, msg_voice, msg_type, from_id,
+    insert_message(msg_id,msg_link, msg_text, msg_video, msg_photo, msg_audio, msg_voice, msg_type, from_id,
                    update.message.date)
 
     user_id = from_id
