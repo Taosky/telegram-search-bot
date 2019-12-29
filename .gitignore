@@ -1,2 +1,5 @@
 .eggs/
 __pycache__/
+.idea
+config.py
+bot.db
