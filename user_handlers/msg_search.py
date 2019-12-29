@@ -26,7 +26,8 @@ def search_messages(keyword, page):
             msg_text = '[{}]'.format(message.type)
         else:
             msg_text = message.text
-        messages.append({'id': message.id, 'link': message.link, 'text': msg_text, 'date': message.date, 'user': user_fullname})
+        messages.append(
+            {'id': message.id, 'link': message.link, 'text': msg_text, 'date': message.date, 'user': user_fullname})
 
     session.close()
     return messages, count
@@ -66,7 +67,9 @@ def inline_caps(bot, update):
                 id=message['id'],
                 title='{}'.format(message['text'][:100]),
                 description=message['date'].strftime("%Y-%m-%d").ljust(40) + message['user'],
-                input_message_content='{}\n\n{}'.format(message['text'],message['link']) if message['link'] else InputTextMessageContent('/locate {}'.format(message['id']))
+                input_message_content=InputTextMessageContent('{}\n\n{}'.format(message['text'], message['link'])) if
+                message['link'] != '' or message['id'] < 0 else InputTextMessageContent(
+                    '/locate {}'.format(message['id']))
             )
         )
     bot.answer_inline_query(update.inline_query.id, results)
