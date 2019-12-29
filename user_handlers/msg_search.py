@@ -67,7 +67,9 @@ def inline_caps(bot, update):
                 id=message['id'],
                 title='{}'.format(message['text'][:100]),
                 description=message['date'].strftime("%Y-%m-%d").ljust(40) + message['user'],
-                input_message_content=InputTextMessageContent('{}\n\n{}'.format(message['text'], message['link'])) if
+                input_message_content=InputTextMessageContent(
+                    '{}[「From {}」]({})'.format(message['text'], message['user'], message['link']),
+                    parse_mode='markdown') if
                 message['link'] != '' or message['id'] < 0 else InputTextMessageContent(
                     '/locate {}'.format(message['id']))
             )
