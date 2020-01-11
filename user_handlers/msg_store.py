@@ -34,8 +34,6 @@ def store_message(bot, update):
             or update.message.from_user.is_bot:
         return
 
-    if '「From ' in update.message.text:
-        return
     msg_id = update.message.message_id
     msg_link = 'https://t.me/c/{}/{}'.format(config.LINK_ID, msg_id) if config.LINK_MODE else ''
     from_id = update.message.from_user.id
@@ -51,6 +49,8 @@ def store_message(bot, update):
     msg_voice = update.message.voice.file_id if update.message.voice else ''
 
     if msg_text:
+        if '「From ' in update.message.text:
+            return
         msg_type = 'text'
     elif msg_video:
         msg_type = 'video'
