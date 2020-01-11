@@ -18,6 +18,7 @@ class Message(Base):
 
     # 表的结构
     id = Column(INTEGER, primary_key=True)
+    link = Column(TEXT)
     type = Column(TEXT)  # 文本、图像、视频、音频、语音
     category = Column(TEXT)  # 分类
     text = Column(TEXT)

@@ -1,3 +1,5 @@
+## 更新至V1.0版本须执行`update_to_v1.0.py`!!!
+
 # telegram-search-bot
 
 为了解决Telegram中文搜索相关问题而写的机器人，可以称之为复读机，后面可能添加更多功能。
@@ -5,7 +7,8 @@
 写了一篇博客文章记录了一下过程，供参考：https://mou.science/2018/09/21/telegram-robot/
 
 ![搜索](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/search.png)
-![复读](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/repeat.png)
+![复读0](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/repeat0.png)
+![复读1](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/link-mode.png)
 
 
 ## Feature
@@ -40,6 +43,12 @@
 3. 按照喜好设置其他选项，将Bot添加到Group。
 4. 修改`config.py`中`TOKEN`运行代码，在Group中使用`/chatid`获得`Group ID`，修改`config.py`中的`GROUP_ID`，重新运行代码即可正常使用。
 
+### 导入历史记录(仅初始化时可用)
+0. 通过Telegram官方客户端导出历史消息记录。
+1. `python init_from_exported.py`执行导入脚本。
+![链接脚本](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/link-mode-script.png)
+
+
 ## Tips
 - Inline Mode具有缓存效果，故连续重复搜索可能不会加载新的消息。
 - Inline Mode placeholder更新需要重启客户端。
@@ -56,6 +65,11 @@
 
 ### Update
 
+#### 2020-01-11 (V1.0)
+- 新增导入历史消息记录。（仅初始化数据库可用，且无法定位）
+- 新增原消息链接模式，超级群组可用，通过点击链接定位消息，见图片。
+![链接](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/link-mode.png)
+
 #### 2019-04-27
 - 添加代理选项（酸酸乳的socks5貌似不行，http可用）
 
@@ -64,7 +78,7 @@
 - 完善README。
 
 #### 2019-03-03
-修复搜索的页码问题。
+- 修复搜索的页码问题。
 
 #### 2019-03-02
 - 重写了大量代码，更换MYSQL数据库为SQLITE，使用ORM，简化后续的开发及方便用户配置。
