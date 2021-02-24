@@ -7,6 +7,11 @@ from database import User, Message, DBSession
 import re
 
 
+def pure_str(s):
+    reg='</?.+?/?>'
+    return re.sub(reg, '', s, count=0)
+
+
 def search_messages(keyword, page):
     messages = []
     start = (page - 1) * SEARCH_PAGE_SIZE
@@ -69,8 +74,8 @@ def inline_caps(bot, update):
                 title='{}'.format(message['text'][:100]),
                 description=message['date'].strftime("%Y-%m-%d").ljust(40) + message['user'],
                 input_message_content=InputTextMessageContent(
-                    '{}[「From {}」]({})'.format(message['text'], message['user'], message['link']),
-                    parse_mode='markdown') if
+                    '{}<a href="{}">「From {}」</a>'.format(pure_str(message['text']), message['link'], message['user']),parse_mode='html'
+                    ) if
                 message['link'] != '' and message['type'] == 'text' or message['id'] < 0 else InputTextMessageContent(
                     '/locate {}'.format(message['id']))
             )
