@@ -3,7 +3,7 @@
 
 为了解决Telegram中文搜索相关问题而写的机器人，可以称之为复读机，后面可能添加更多功能。
 
-写了一篇博客文章记录了一下过程，供参考：https://mou.science/2018/09/21/telegram-robot/
+写了一篇博客文章记录了一下过程，供参考：https://taosky.github.io/post/telegram-robot/
 
 ![搜索](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/search.png)
 ![复读0](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/repeat0.png)
