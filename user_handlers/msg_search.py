@@ -5,6 +5,7 @@ from telegram.ext import InlineQueryHandler
 from config import SEARCH_PAGE_SIZE, GROUP_ID
 from database import User, Message, DBSession
 import re
+from sqlalchemy import and_
 
 
 def pure_str(s):
@@ -12,14 +13,15 @@ def pure_str(s):
     return re.sub(reg, '', s, count=0)
 
 
-def search_messages(keyword, page):
+def search_messages(keywords, page):
     messages = []
     start = (page - 1) * SEARCH_PAGE_SIZE
     stop = page * SEARCH_PAGE_SIZE
     session = DBSession()
-    if keyword:
-        count = session.query(Message).filter(Message.text.ilike('%{}%'.format(keyword))).count()
-        query = session.query(Message).filter(Message.text.ilike('%{}%'.format(keyword))).order_by(
+    if keywords:
+        rule = and_(*[Message.text.like('%' + keyword+ '%') for keyword in keywords])
+        count = session.query(Message).filter(rule).count()
+        query = session.query(Message).filter(rule).order_by(
             Message.date.desc()).slice(start, stop)
     else:
         count = session.query(Message).count()
@@ -50,18 +52,19 @@ def inline_caps(bot, update):
     query = update.inline_query.query
     # recent messages
     if not query:
-        keyword, page = None, 1
+        keywords, page = None, 1
 
     elif re.match(' *\* +(\d+)', query):
-        keyword, page = None, int(re.match('\* +(\d+)', query).group(1))
+        keywords, page = None, int(re.match('\* +(\d+)', query).group(1))
     # search messages
     else:
-        re_match = re.match('(.*) +(\d+)', query)
-        if re_match:
-            keyword, page = re_match.group(1), int(re_match.group(2))
+        keywords = [word for word in query.split(" ")]
+        if keywords[-1].isdigit():
+            page = int(keywords[-1])
+            keywords.pop()
         else:
-            keyword, page = query, 1
-    messages, count = search_messages(keyword, page)
+            page = 1
+    messages, count = search_messages(keywords, page)
     results = [InlineQueryResultArticle(
         id='info',
         title='Total:{}. Page {} of {}'.format(count, page, math.ceil(count / SEARCH_PAGE_SIZE)),

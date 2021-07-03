@@ -1,4 +1,3 @@
-## 更新至V1.0版本须执行`update_to_v1.0.py`!!!
 
 # telegram-search-bot
 
@@ -38,7 +37,7 @@
 
 ### 机器人创建设置
 0. 与[@botfather](https://t.me/botfather)对话按照步骤创建Bot，记录`token`备用。
-1. 设置Inline Mode: 选择你的Bot进入Bot Settings，Inline Mode开启，Edit inline placeholder，发送`{keyword} {page}`。
+1. 设置Inline Mode: 选择你的Bot进入Bot Settings，Inline Mode开启，Edit inline placeholder，发送`{keywords} {page}`。
 2. 关闭[Privacy mode](https://core.telegram.org/bots#privacy-mode)，选择你的Bot进入Bot Settings，Group Privacy - Turn off。
 3. 按照喜好设置其他选项，将Bot添加到Group。
 4. 修改`config.py`中`TOKEN`运行代码，在Group中使用`/chatid`获得`Group ID`，修改`config.py`中的`GROUP_ID`，重新运行代码即可正常使用。
@@ -64,6 +63,9 @@
  
 
 ### Update
+
+#### 2021-07-03
+- 支持多关键词搜索
 
 #### 2021-02-04
 - 修复inline mode部分关键词结果不显示问题（特定字符导致的解析错误）
