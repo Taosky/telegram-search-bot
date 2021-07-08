@@ -18,7 +18,6 @@
 ## Commands
 - `@your_bot {keyword} {page}`: 用于搜索，`@`无参数为显示历史消息，此时翻页用`* {page}`，无页码默认第一页，`pagesize`可自行设置。
 - `/chatid`: 获取当前聊天的ID，即Group ID或User ID，此功能可在多个聊天中独立使用。
-- `/database`: 获取聊天记录的SQLite数据库文件。
 - `/help`: 获取使用帮助。
 
 ## Requirements
@@ -27,6 +26,7 @@
 - Web Server（可选，WebHook模式需要）
 
 ## Usage
+**可以直接Docker部署：https://hub.docker.com/r/taoskycn/telegram-search-bot**
 
 ### 代码部署运行
 0. 虚拟环境（可选）
@@ -51,7 +51,6 @@
 ## Tips
 - Inline Mode具有缓存效果，故连续重复搜索可能不会加载新的消息。
 - Inline Mode placeholder更新需要重启客户端。
-- 数据库连续获取并不会更新。
 
 
 ## Develop
