@@ -4,3 +4,4 @@ __pycache__/
 config.py
 bot.db
 venv
+.DS_Store

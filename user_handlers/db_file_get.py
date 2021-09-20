@@ -1,15 +1,13 @@
 from telegram.ext import CommandHandler
-import config
-from utils import auto_delete, delete_prev_message
+from utils import read_config
 import datetime
 from database import DBSession, DBFile
 
 
-@auto_delete
-def get_database_file(bot, update):
-    if update.message.chat_id != config.GROUP_ID:
+def get_database_file(update, context):
+    config = read_config()
+    if not config or update.effective_chat.id != config['group_id']:
         return
-    delete_prev_message(bot, update)
 
     now = datetime.datetime.now()
 
@@ -29,7 +27,7 @@ def get_database_file(bot, update):
         filename = 'bot.{}.db'.format(now.strftime("%Y-%m-%d_%H.%M"))
         new_record = True
 
-    sent_message = bot.send_document(chat_id=update.message.chat_id, document=file, filename=filename,
+    sent_message = context.bot.send_document(chat_id=update.effective_chat.id, document=file, filename=filename,
                                      disable_notification=True)
 
     # 保存新的获取数据库记录
