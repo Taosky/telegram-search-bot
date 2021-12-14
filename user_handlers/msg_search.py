@@ -6,11 +6,7 @@ from config import SEARCH_PAGE_SIZE, GROUP_ID
 from database import User, Message, DBSession
 import re
 from sqlalchemy import and_
-
-
-def pure_str(s):
-    reg='</?.+?/?>'
-    return re.sub(reg, '', s, count=0)
+import html
 
 
 def search_messages(keywords, page):
@@ -77,7 +73,7 @@ def inline_caps(bot, update):
                 title='{}'.format(message['text'][:100]),
                 description=message['date'].strftime("%Y-%m-%d").ljust(40) + message['user'],
                 input_message_content=InputTextMessageContent(
-                    '{}<a href="{}">「From {}」</a>'.format(pure_str(message['text']), message['link'], message['user']),parse_mode='html'
+                    '{}<a href="{}">「From {}」</a>'.format(html.escape(message['text']), message['link'], message['user']),parse_mode='html'
                     ) if
                 message['link'] != '' and message['type'] == 'text' or message['id'] < 0 else InputTextMessageContent(
                     '/locate {}'.format(message['id']))
