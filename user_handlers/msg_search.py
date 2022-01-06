@@ -2,18 +2,13 @@
 import math
 import re
 from utils import read_config
-
+import html
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 from telegram.ext import InlineQueryHandler
 from database import User, Message, DBSession
 from sqlalchemy import and_
 
 SEARCH_PAGE_SIZE = 25
-
-
-def pure_str(s):
-    reg='</?.+?/?>'
-    return re.sub(reg, '', s, count=0)
 
 
 def search_messages(keywords, page):
@@ -81,7 +76,7 @@ def inline_caps(update, context):
                 title='{}'.format(message['text'][:100]),
                 description=message['date'].strftime("%Y-%m-%d").ljust(40) + message['user'],
                 input_message_content=InputTextMessageContent(
-                    '{}<a href="{}">「From {}」</a>'.format(pure_str(message['text']), message['link'], message['user']),parse_mode='html'
+                    '{}<a href="{}">「From {}」</a>'.format(html.escape(message['text']), message['link'], message['user']),parse_mode='html'
                     ) if
                 message['link'] != '' and message['type'] == 'text' or message['id'] < 0 else InputTextMessageContent(
                     '/locate {}'.format(message['id']))
