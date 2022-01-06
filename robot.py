@@ -1,39 +1,32 @@
-# coding: utf-8
 from telegram.ext import Updater
-import config
 import logging
-from user_handlers import custom_handlers
-from user_jobs import custom_jobs
-from user_handlers.__error_handle import error_callback
+import sys
+import os
+from user_handlers import bot_help, bot_start, chatid_get, db_file_get, msg_search, msg_store
+from user_jobs.commands_set import set_bot_commands
 
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                     level=logging.DEBUG)
 
-if config.PROXY:
-    proxy_url = config.PROXY_URL
-    updater = Updater(token=config.TOKEN, request_kwargs={'proxy_url': proxy_url})
-else:
-    updater = Updater(token=config.TOKEN)
+bot_token = os.getenv('BOT_TOKEN')
+
+updater = Updater(token=bot_token)
+
 dispatcher = updater.dispatcher
+
+# Run jobs
 job = updater.job_queue
+job.run_once(set_bot_commands, 30)
 
-# handle error
-dispatcher.add_error_handler(error_callback)
+# Handle user_handlers
+dispatcher.add_handler(bot_start.handler)
+dispatcher.add_handler(bot_help.handler)
+dispatcher.add_handler(chatid_get.handler)
+dispatcher.add_handler(db_file_get.handler)
+dispatcher.add_handler(msg_search.handler)
+dispatcher.add_handler(msg_store.handler)
 
-# handle user_handlers
-for handler in custom_handlers:
-    dispatcher.add_handler(handler)
-
-# jobs
-for job_info in custom_jobs:
-    job.run_repeating(**job_info)
-
-if __name__ == '__main__':
-    # polling mode
+if __name__ == '__main__':        
+    # Polling mode
     updater.start_polling()
     updater.idle()
-
-    # Webhook mode
-    # updater.start_webhook(listen='127.0.0.1', port=12306, url_path='TOKEN')
-    # updater.bot.set_webhook(url='https://telegram.xxx.xx/TOKEN')
-    # updater.idle()

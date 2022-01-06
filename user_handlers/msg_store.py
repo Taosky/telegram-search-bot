@@ -1,8 +1,7 @@
 # coding: utf-8
+from utils import read_config
 from telegram.ext import MessageHandler, Filters
-import config
 from database import DBSession, Message, User
-import logging
 
 
 def insert_or_update_user(user_id, fullname, username):
@@ -28,14 +27,14 @@ def insert_message(msg_id, msg_link, msg_text, msg_video, msg_photo, msg_audio, 
     session.close()
 
 
-def store_message(bot, update):
-    if update.message.chat_id != config.GROUP_ID \
-            or update.message.from_user.id in config.EXCEPT_IDS \
-            or update.message.from_user.is_bot:
+def store_message(update, context):
+    config = read_config()
+    if not config or update.effective_chat.id != config['group_id'] \
+            or update.message.from_user.is_bot \
+                or update.message.via_bot:
         return
-
     msg_id = update.message.message_id
-    msg_link = 'https://t.me/c/{}/{}'.format(config.LINK_ID, msg_id) if config.LINK_MODE else ''
+    msg_link = update.message.link
     from_id = update.message.from_user.id
     msg_text = update.message.text if update.message.text else ''
     msg_video = update.message.video.file_id if update.message.video else ''
@@ -49,8 +48,6 @@ def store_message(bot, update):
     msg_voice = update.message.voice.file_id if update.message.voice else ''
 
     if msg_text:
-        if '「From ' in update.message.text:
-            return
         msg_type = 'text'
     elif msg_video:
         msg_type = 'video'

@@ -1,12 +1,14 @@
 # coding: utf-8
 import math
+import re
+from utils import read_config
+import html
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 from telegram.ext import InlineQueryHandler
-from config import SEARCH_PAGE_SIZE, GROUP_ID
 from database import User, Message, DBSession
-import re
 from sqlalchemy import and_
-import html
+
+SEARCH_PAGE_SIZE = 25
 
 
 def search_messages(keywords, page):
@@ -37,22 +39,23 @@ def search_messages(keywords, page):
     return messages, count
 
 
-def inline_caps(bot, update):
+def inline_caps(update, context):
     from_user_id = update.inline_query.from_user.id
-    # 检查是否为群成员
+    # Check user permission
     try:
-        bot.get_chat_member(chat_id=GROUP_ID, user_id=from_user_id)
+        config = read_config()
+        context.bot.get_chat_member(chat_id=config['group_id'], user_id=from_user_id)
     except:
         return
 
     query = update.inline_query.query
-    # recent messages
+    # Get recent messages
     if not query:
         keywords, page = None, 1
 
     elif re.match(' *\* +(\d+)', query):
         keywords, page = None, int(re.match('\* +(\d+)', query).group(1))
-    # search messages
+    # Search messages
     else:
         keywords = [word for word in query.split(" ")]
         if keywords[-1].isdigit():
@@ -79,7 +82,7 @@ def inline_caps(bot, update):
                     '/locate {}'.format(message['id']))
             )
         )
-    bot.answer_inline_query(update.inline_query.id, results)
+    context.bot.answer_inline_query(update.inline_query.id, results)
 
 
 handler = InlineQueryHandler(inline_caps)
