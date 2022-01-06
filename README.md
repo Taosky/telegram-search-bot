@@ -3,7 +3,6 @@
 
 为了解决Telegram中文搜索相关问题而写的机器人，可以称之为复读机，后面可能添加更多功能。
 
-
 ![搜索](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/search.png)
 ![复读](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/link-mode.png)
 
@@ -12,11 +11,6 @@
 - 消息记录、搜索、复读定位（主要功能，解决中文搜索的问题）。
 - 定时任务（有能力可根据需要修改，目前是报时，删除文件可取消）。
 - 具有定时撤回、排除ID等额外配置。
-
-## Commands
-- `@your_bot [keywords] {page}`: 用于搜索，`@`无参数为显示历史消息，此时翻页用`* {page}`，无页码默认第一页，`pagesize`可自行设置。
-- `/chatid`: 获取当前聊天的ID，即Group ID或User ID，此功能可在多个聊天中独立使用。
-- `/help`: 获取使用帮助。
 
 ## Requirements
 - Docker部署(外网/代理)
@@ -41,7 +35,13 @@
     --restart always \
     --name tgbot \
     taosky/telegram-search-bot:v2
-    ````
+````
+
+
+### 群内使用
+- `/start`启用
+- `@your_bot [keywords] {page}`: 用于搜索，`@`无参数为显示历史消息，此时翻页用`* {page}`。
+- `/help`: 获取使用帮助。
 
 ### <del导入历史记录</del>
 
@@ -50,7 +50,7 @@
 - Inline Mode placeholder更新需要重启客户端。
  
 
-### Update
+## Update
 #### 2022-01-06
 - Docker化
 
