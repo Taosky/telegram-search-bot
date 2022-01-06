@@ -28,7 +28,7 @@
 1. `docker build -t taosky/telegram-search-bot:v2 .`
 2. 修改`映射路径`、`token`、`代理（可删掉）`，执行
 ````bash
-    sudo docker run -d -v /home/xxx/telegram-search-bot/bot.db:/app/bot.db \
+    docker run -d -v /home/xxx/telegram-search-bot/bot.db:/app/bot.db \
     -e BOT_TOKEN=12345:abcdefg \
     -e https_proxy=http://127.0.0.1:7890 \
     --network host \
