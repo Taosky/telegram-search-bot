@@ -3,11 +3,9 @@
 
 为了解决Telegram中文搜索相关问题而写的机器人，可以称之为复读机，后面可能添加更多功能。
 
-写了一篇博客文章记录了一下过程，供参考：https://taosky.github.io/post/telegram-robot/
 
 ![搜索](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/search.png)
-![复读0](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/repeat0.png)
-![复读1](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/link-mode.png)
+![复读](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/link-mode.png)
 
 
 ## Feature
@@ -16,52 +14,49 @@
 - 具有定时撤回、排除ID等额外配置。
 
 ## Commands
-- `@your_bot {keyword} {page}`: 用于搜索，`@`无参数为显示历史消息，此时翻页用`* {page}`，无页码默认第一页，`pagesize`可自行设置。
+- `@your_bot [keywords] {page}`: 用于搜索，`@`无参数为显示历史消息，此时翻页用`* {page}`，无页码默认第一页，`pagesize`可自行设置。
 - `/chatid`: 获取当前聊天的ID，即Group ID或User ID，此功能可在多个聊天中独立使用。
 - `/help`: 获取使用帮助。
 
 ## Requirements
-- VPS/其他主机
-- Python环境
-- Web Server（可选，WebHook模式需要）
+- Docker部署(外网/代理)
 
 ## Usage
-**可以直接Docker部署：https://hub.docker.com/r/taoskycn/telegram-search-bot**
-
-### 代码部署运行
-0. 虚拟环境（可选）
-1. 安装依赖: `pip install -r requirements.txt`。
-2. 修改`config.py`。
-3. 轮询模式直接 `python robot.py`启动即可；如果需要WebHook模式，根据情况修改`robot.py`最后几行，并设置好`Nginx`等Web Server，比较麻烦请自行了解。
-
 
 ### 机器人创建设置
 0. 与[@botfather](https://t.me/botfather)对话按照步骤创建Bot，记录`token`备用。
-1. 设置Inline Mode: 选择你的Bot进入Bot Settings，Inline Mode开启，Edit inline placeholder，发送`{keywords} {page}`。
+1. 设置Inline Mode: 选择你的Bot进入Bot Settings，Inline Mode开启，Edit inline placeholder，发送`[keywords] {page}`。
 2. 关闭[Privacy mode](https://core.telegram.org/bots#privacy-mode)，选择你的Bot进入Bot Settings，Group Privacy - Turn off。
-3. 按照喜好设置其他选项，将Bot添加到Group。
-4. 修改`config.py`中`TOKEN`运行代码，在Group中使用`/chatid`获得`Group ID`，修改`config.py`中的`GROUP_ID`，重新运行代码即可正常使用。
+3. 按照喜好设置其他选项，将Bot添加到Group，设置权限读取发送信息。
 
-### 导入历史记录(仅初始化时可用)
-0. 通过Telegram官方客户端导出历史消息记录。
-1. `python init_from_exported.py`执行导入脚本。
-![链接脚本](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/link-mode-script.png)
+### Docker构建运行
+0. `git clone git@github.com:Taosky/telegram-search-bot.git && cd telegram-search-bot`
+1. `docker build -t taosky/telegram-search-bot:v2 .`
+2. 修改`映射路径`、`token`、`代理（可删掉）`，执行
+````bash
+    sudo docker run -d -v /home/xxx/telegram-search-bot/bot.db:/app/bot.db \
+    -e BOT_TOKEN=12345:abcdefg \
+    -e https_proxy=http://127.0.0.1:7890 \
+    --network host \
+    --restart always \
+    --name tgbot \
+    taosky/telegram-search-bot:v2
+    ````
 
+### <del导入历史记录</del>
 
 ## Tips
 - Inline Mode具有缓存效果，故连续重复搜索可能不会加载新的消息。
 - Inline Mode placeholder更新需要重启客户端。
-
-
-## Develop
-#### Handler
-`user_handlers`中的模块用于接受群组消息实现一些功能，只需要实现回调函数并添加`handler`即可添加一个模块（默认的`text`已被占用，如需要修改`msg_store.py`）。
-
-#### Jobs
-`user_jobs`中的模块用于实现定时任务（间隔运行，定时需手动判断），同上，添加`job_info`即可。
  
 
 ### Update
+#### 2022-01-06
+- Docker化
+
+#### 2021-09-20
+- 更新python-telegram-bot库
+- 重构代码，简化操作
 
 #### 2021-07-03
 - 支持多关键词搜索
