@@ -24,7 +24,7 @@
 3. 按照喜好设置其他选项，将Bot添加到Group，设置权限读取发送信息。
 
 ### Docker构建运行
-0. `git clone https://github.com/Taosky/telegram-search-bot.git && cd telegram-search-bot.git`
+0. `git clone https://github.com/Taosky/telegram-search-bot.git && cd telegram-search-bot`
 1. `docker build -t taosky/telegram-search-bot:v2 .`
 2. 修改`映射路径`、`token`、`代理（可删掉）`，执行
 ````bash
