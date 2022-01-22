@@ -19,7 +19,7 @@
 
 ### 机器人创建设置
 0. 与[@botfather](https://t.me/botfather)对话按照步骤创建Bot，记录`token`备用。
-1. 设置Inline Mode: 选择你的Bot进入Bot Settings，Inline Mode开启，Edit inline placeholder，发送`[keywords] {page}`。
+1. 设置Inline Mode: 选择你的Bot进入Bot Settings，Inline Mode开启，Edit inline placeholder，设置为`[keywords] {page}`。
 2. 关闭[Privacy mode](https://core.telegram.org/bots#privacy-mode)，选择你的Bot进入Bot Settings，Group Privacy - Turn off。
 3. 按照喜好设置其他选项，将Bot添加到Group，设置权限读取发送信息。
 
@@ -37,9 +37,9 @@
     taosky/telegram-search-bot:v2
 ````
 
-
 ### 群内使用
-- `/start`启用
+- **首先要升级成超级群组，人数较多的群组应该会自动升级，手动升级需要将群组类型设置为`Public`（立即生效，可再改回Private，仍然是超级群组）**
+- `/start`启用。
 - `@your_bot [keywords] {page}`: 用于搜索，`@`无参数为显示历史消息，此时翻页用`* {page}`。
 - `/help`: 获取使用帮助。
 
@@ -66,8 +66,7 @@
 
 #### 2020-01-11 (V1.0)
 - 新增导入历史消息记录。（仅初始化数据库可用，且无法定位）
-- 新增原消息链接模式，超级群组可用，通过点击链接定位消息，见图片。
-![链接](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/link-mode.png)
+- 新增原消息链接模式，超级群组可用，通过点击链接定位消息。
 
 #### 2019-04-27
 - 添加代理选项（酸酸乳的socks5貌似不行，http可用）
