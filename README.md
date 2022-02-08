@@ -44,7 +44,7 @@
 - `/help`: 获取使用帮助。
 
 ### 导入历史记录
-Telegram桌面客户端，点击群组右上角`Export chat history`，选择JSON格式，打开`http://127.0.0.1:5006`，选择导出的JSON文件上传。（**同样需要supergroup**，否则提示错误）
+Telegram桌面客户端，点击群组右上角`Export chat history`(仅文本)，选择JSON格式，打开`http://127.0.0.1:5006`，选择导出的JSON文件上传。（**同样需要supergroup**，否则提示错误）
 
 ## Tips
 - Inline Mode具有缓存效果，故连续重复搜索可能不会加载新的消息。
