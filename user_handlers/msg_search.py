@@ -31,6 +31,9 @@ def search_messages(keywords, page):
             msg_text = '[{}]'.format(message.type)
         else:
             msg_text = message.text
+        
+        if msg_text == '':
+            continue
         messages.append(
             {'id': message.id, 'link': message.link, 'text': msg_text, 'date': message.date, 'user': user_fullname,
              'type': message.type})
@@ -44,10 +47,11 @@ def inline_caps(update, context):
     # Check user permission
     try:
         config = read_config()
-        context.bot.get_chat_member(chat_id=config['group_id'], user_id=from_user_id)
+        chat_member= context.bot.get_chat_member(chat_id=config['group_id'], user_id=from_user_id)
     except:
         return
-
+    if chat_member.status == 'left':
+        return
     query = update.inline_query.query
     # Get recent messages
     if not query:

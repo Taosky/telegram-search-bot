@@ -36,7 +36,9 @@ def insert_messages(chat_id, messages):
                     msg_text += obj
         else:
             msg_text = message['text']
-        
+
+        if msg_text =='':
+            msg_text == '[其他消息]'
         message_date = datetime.strptime(message['date'], '%Y-%m-%dT%H:%M:%S')
         new_msg = Message(id=message['id'], link='https://t.me/c/{}/{}'.format(chat_id,message['id']), text=msg_text, video='', photo='',
                           audio='', voice='', type='text', category='', from_id=message['from_id'][4:], date=message_date)
