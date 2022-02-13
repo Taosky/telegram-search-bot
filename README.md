@@ -47,6 +47,8 @@
 ## Update
 #### 2022-02-13
 - WebHook模式及docker-compose
+- 修复inline mode没有鉴权问题
+- 修复text为空时报错问题 
 
 #### 2022-02-08
 - Web界面可导入历史消息（5006端口）
