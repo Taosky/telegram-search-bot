@@ -27,6 +27,7 @@
 1. `docker build -t taosky/telegram-search-bot:v2 .`
 2. 修改`docker-compose.yml`, 配置运行模式、Bot ID、映射等。
 3. 如使用webhook模式，查看Caddyfile进行配置，或手动进行反代设置。
+4. `docker-compose up -d`后台执行。
 
 ### 群内使用
 0. 首先要确认是否**超级群组(supergroup)**（右键消息有copy link选项），人数较多的群组应该会自动升级，手动升级需要将群组类型设置为`Public`（立即生效，可再改回Private）
