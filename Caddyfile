@@ -1,0 +1,18 @@
+# Caddyfile 用以配置webhook的反向代理
+# 更改域名为自己的域名并配置好Dns解析
+# 更改route 后的后缀为每个Docker容器中的url-path 并更改 reverse_proxy 后面的端口号为映射的端口号
+
+https://hook.examlple.xyz {
+        encode gzip
+        tls internal
+        route /test {
+                reverse_proxy http://127.0.0.1:9968
+        }
+        route /good {
+                reverse_proxy http://127.0.0.1:9969
+        }
+}
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5fe7213 (支持webhook模式并添加docker-compose构建)
