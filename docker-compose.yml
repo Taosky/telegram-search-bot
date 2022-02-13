@@ -11,10 +11,13 @@ services:
             - 5006:5006
             - 9968:9968
         environment:
-            - BOT_MODE=webhook
-            - URL_PATH=test
-            - HOOK_URL=https://hook.example.xyz/test
-            - BOT_TOKEN=yourtoken
+            - BOT_MODE=webhook  # polling / webhook (webhook模式请查看Caddyfile)
+            - BOT_TOKEN=xxxx:xxxxx # Telegram Bot Token 
+            # 如使用polling模式, 下面的内容不用修改
+            - URL_PATH=test     # webhook模式的路径
+            - HOOK_URL=https://hook.example.xyz/test # webhook完整url
+    
+    # polling模式可将caddy部分注释掉
     caddy:
         container_name: caddy
         image: caddy:2-alpine
@@ -22,7 +25,3 @@ services:
         volumes:
             - ./Caddyfile:/etc/caddy/Caddyfile
         network_mode: "host"
-<<<<<<< HEAD
-=======
-
->>>>>>> 5fe7213 (支持webhook模式并添加docker-compose构建)

@@ -12,7 +12,3 @@ https://hook.examlple.xyz {
                 reverse_proxy http://127.0.0.1:9969
         }
 }
-<<<<<<< HEAD
-=======
-
->>>>>>> 5fe7213 (支持webhook模式并添加docker-compose构建)

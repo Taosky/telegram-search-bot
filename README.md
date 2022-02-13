@@ -1,19 +1,18 @@
 
 # telegram-search-bot
 
-为了解决Telegram中文搜索相关问题而写的机器人，可以称之为复读机，后面可能添加更多功能。
+为了解决Telegram中文搜索相关问题而写的机器人，后面可能添加更多功能。
+
+## Feature
+消息记录、搜索、复读定位（解决中文搜索的问题）。
 
 ![搜索](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/search.png)
+
 ![复读](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/link-mode.png)
 
 
-## Feature
-- 消息记录、搜索、复读定位（主要功能，解决中文搜索的问题）。
-- 定时任务（有能力可根据需要修改，目前是报时，删除文件可取消）。
-- 具有定时撤回、排除ID等额外配置。
-
 ## Requirements
-- Docker部署(外网/代理)
+- Docker部署(外网/代理环境)
 
 ## Usage
 
@@ -26,25 +25,19 @@
 ### Docker构建运行
 0. `git clone https://github.com/Taosky/telegram-search-bot.git && cd telegram-search-bot`
 1. `docker build -t taosky/telegram-search-bot:v2 .`
-2. 修改`映射路径`、`token`、`代理（可删掉）`，执行
-````bash
-    docker run -d -v /home/xxx/telegram-search-bot/bot.db:/app/bot.db \
-    -e BOT_TOKEN=12345:abcdefg \
-    -e https_proxy=http://127.0.0.1:7890 \
-    --network host \
-    --restart always \
-    --name tgbot \
-    taosky/telegram-search-bot:v2
-````
+2. 修改`docker-compose.yml`, 配置运行模式、Bot ID、映射等。
+3. 如使用webhook模式，查看Caddyfile进行配置，或手动进行反代设置。
 
 ### 群内使用
-- **首先要确认是否超级群组（右键消息有copy link选项），人数较多的群组应该会自动升级，手动升级需要将群组类型设置为`Public`（立即生效，可再改回Private，仍然是超级群组）**
-- `/start`启用。
-- `@your_bot [keywords] {page}`: 用于搜索，`@`无参数为显示历史消息，此时翻页用`* {page}`。
-- `/help`: 获取使用帮助。
+0. 首先要确认是否**超级群组(supergroup)**（右键消息有copy link选项），人数较多的群组应该会自动升级，手动升级需要将群组类型设置为`Public`（立即生效，可再改回Private）
+1. 在目标群内`/start`启用。
+2. `@your_bot [keywords] {page}`: 用于搜索，`@`无参数为显示历史消息，此时翻页用`* {page}`。
+3. `/help`: 获取使用帮助。
 
 ### 导入历史记录
-Telegram桌面客户端，点击群组右上角`Export chat history`(仅文本)，选择JSON格式，打开`http://127.0.0.1:5006`，选择导出的JSON文件上传。（**同样需要supergroup**，否则提示错误）
+0. 导出前确认群组为**超级群组**，否则导入将提示错误。
+1. Telegram桌面客户端，点击群组右上角`Export chat history`(仅文本)，选择JSON格式。
+2. `http://127.0.0.1:5006`，选择导出的JSON文件上传。
 
 ## Tips
 - Inline Mode具有缓存效果，故连续重复搜索可能不会加载新的消息。
@@ -52,6 +45,9 @@ Telegram桌面客户端，点击群组右上角`Export chat history`(仅文本)�
  
 
 ## Update
+#### 2022-02-13
+- WebHook模式及docker-compose
+
 #### 2022-02-08
 - Web界面可导入历史消息（5006端口）
 
