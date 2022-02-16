@@ -1,5 +1,5 @@
 # coding: utf-8
-from sqlalchemy import Column, INTEGER, TEXT, DATETIME, create_engine
+from sqlalchemy import Column, INTEGER, TEXT, BOOLEAN, DATETIME, create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.pool import StaticPool
@@ -28,6 +28,7 @@ class Message(Base):
     voice = Column(TEXT)
     date = Column(DATETIME)
     from_id = Column(INTEGER)
+    from_chat = Column(INTEGER)
 
 
 class User(Base):
@@ -38,16 +39,16 @@ class User(Base):
     id = Column(INTEGER, primary_key=True)
     fullname = Column(TEXT)
     username = Column(TEXT)
-    update_time = Column(DATETIME)
 
 
-class DBFile(Base):
+class Chat(Base):
     # 表的名字
-    __tablename__ = 'db_file'
+    __tablename__ = 'chat'
 
     # 表的结构
-    file_id = Column(TEXT, primary_key=True)
-    date = Column(DATETIME)
+    id = Column(INTEGER, primary_key=True)
+    title = Column(TEXT)
+    enable = Column(BOOLEAN)
 
 
 Base.metadata.create_all(engine)

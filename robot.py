@@ -2,11 +2,11 @@ from telegram.ext import Updater
 import logging
 import sys
 import os
-from user_handlers import bot_help, bot_start, chatid_get, db_file_get, msg_search, msg_store
+from user_handlers import bot_help, chat_start, chat_stop, chat_delete, chatid_get, msg_search, msg_store
 from user_jobs.commands_set import set_bot_commands
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.DEBUG)
+                    level=logging.INFO)
 
 bot_token = os.getenv('BOT_TOKEN')
 
@@ -19,12 +19,14 @@ job = updater.job_queue
 job.run_once(set_bot_commands, 30)
 
 # Handle user_handlers
-dispatcher.add_handler(bot_start.handler)
+dispatcher.add_handler(chat_start.handler)
+dispatcher.add_handler(chat_stop.handler)
+dispatcher.add_handler(chat_delete.handler)
 dispatcher.add_handler(bot_help.handler)
 dispatcher.add_handler(chatid_get.handler)
-dispatcher.add_handler(db_file_get.handler)
 dispatcher.add_handler(msg_search.handler)
 dispatcher.add_handler(msg_store.handler)
+
 
 if __name__ == '__main__':
     # Select mode
