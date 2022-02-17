@@ -30,5 +30,4 @@ def delete(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg_text)
 
 
-# Command: start bot
 handler = CommandHandler('delete', delete)

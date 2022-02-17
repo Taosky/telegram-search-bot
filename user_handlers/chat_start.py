@@ -20,6 +20,7 @@ def insert_chat_or_enable(chat_id, title):
     session.close()
     return msg_text
 
+
 def start(update, context):
     msg_text = ''
     chat_id = update.effective_chat.id
@@ -37,5 +38,4 @@ def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg_text)
 
 
-# Command: start bot
 handler = CommandHandler('start', start)

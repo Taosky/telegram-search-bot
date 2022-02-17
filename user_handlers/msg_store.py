@@ -1,4 +1,3 @@
-# coding: utf-8
 from telegram.ext import MessageHandler, Filters
 from database import DBSession, Message, User, Chat
 

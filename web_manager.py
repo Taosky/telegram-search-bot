@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request, jsonify, redirect,url_for,Response
-from database import DBSession, Message, User
+from flask import Flask, request, redirect
+from database import DBSession, Message, User, Chat
 from datetime import datetime
 import json
 
@@ -9,7 +9,17 @@ app = Flask(__name__, static_url_path='',
             static_folder='static')
 
 
-def insert_or_update_user(user_id, fullname, username):
+def insert_chat_or_do_nothing(chat_id, title):
+    session = DBSession()
+    target_chat = session.query(Chat).get(chat_id)
+    if not target_chat:
+        new_chat =  Chat(id=chat_id, title=title, enable=False)
+        session.add(new_chat)
+        session.commit()
+    session.close()
+
+
+def insert_user_or_do_nothing(user_id, fullname, username):
     session = DBSession()
     target_user = session.query(User).get(user_id)
     if not target_user:
@@ -26,7 +36,7 @@ def insert_messages(chat_id, messages):
     for message in messages:
         if 'user' not in message['from_id']:
             continue
-        insert_or_update_user(message['from_id'][4:], message['from'], message['from'])
+        insert_user_or_do_nothing(message['from_id'][4:], message['from'], message['from'])
         if isinstance(message['text'], list):
             msg_text = ''
             for obj in message['text']:
@@ -41,7 +51,7 @@ def insert_messages(chat_id, messages):
             msg_text == '[其他消息]'
         message_date = datetime.strptime(message['date'], '%Y-%m-%dT%H:%M:%S')
         new_msg = Message(id=message['id'], link='https://t.me/c/{}/{}'.format(chat_id,message['id']), text=msg_text, video='', photo='',
-                          audio='', voice='', type='text', category='', from_id=message['from_id'][4:], date=message_date)
+                          audio='', voice='', type='text', category='', from_id=message['from_id'][4:], from_chat=chat_id,date=message_date)
         
         session = DBSession()
         try:
@@ -78,6 +88,7 @@ def upload_file():
             if 'supergroup' not in history_json['type']:
                 return '<!doctype html><h2>导入结果</h2><p>导入出错：群组非supergroup</p>'
             else:
+                insert_chat_or_do_nothing(history_json['id'],history_json['name'])
                 success_count, fail_count, fail_messages = insert_messages(history_json['id'],history_json['messages'])
                 fail_text = ''
                 for fail_message in fail_messages:
