@@ -1,4 +1,3 @@
-# coding: utf-8
 from telegram.ext import CommandHandler
 from utils import auto_delete
 import logging
@@ -10,5 +9,4 @@ def get_chat_id(update, context):
     return sent_message
 
 
-# Command: get chat id
 handler = CommandHandler('chat_id', get_chat_id)
