@@ -13,9 +13,6 @@ def insert_chat_or_do_nothing(chat_id, title):
     session = DBSession()
     target_chat = session.query(Chat).get(chat_id)
     if not target_chat:
-        edit_chat_id = int('-100' + str(chat_id))
-        target_chat = session.query(Chat).get(edit_chat_id)
-    if not target_chat:
         new_chat =  Chat(id=chat_id, title=title, enable=False)
         session.add(new_chat)
         session.commit()
@@ -93,8 +90,9 @@ def upload_file():
             if 'supergroup' not in history_json['type']:
                 return '<!doctype html><h2>导入结果</h2><p>导入出错：群组非supergroup</p>'
             else:
-                insert_chat_or_do_nothing(history_json['id'],history_json['name'])
-                success_count, fail_count, fail_messages = insert_messages(history_json['id'],history_json['messages'])
+                edit_id = history_json['id'] if history_json['id'] < 0 else int('-100' + str(history_json['id']))
+                insert_chat_or_do_nothing(edit_id,history_json['name'])
+                success_count, fail_count, fail_messages = insert_messages(edit_id,history_json['messages'])
                 fail_text = ''
                 for fail_message in fail_messages:
                     fail_text += '<p><i>{}</i></p>'.format(fail_message) 
