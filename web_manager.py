@@ -13,6 +13,9 @@ def insert_chat_or_do_nothing(chat_id, title):
     session = DBSession()
     target_chat = session.query(Chat).get(chat_id)
     if not target_chat:
+        edit_chat_id = int('-100' + str(chat_id))
+        target_chat = session.query(Chat).get(edit_chat_id)
+    if not target_chat:
         new_chat =  Chat(id=chat_id, title=title, enable=False)
         session.add(new_chat)
         session.commit()
@@ -34,7 +37,9 @@ def insert_messages(chat_id, messages):
     fail_messages = []
     success_count = 0
     for message in messages:
-        if 'user' not in message['from_id']:
+        if 'from_id' not in message :
+            continue
+        elif 'user' not in message ['from_id']:
             continue
         insert_user_or_do_nothing(message['from_id'][4:], message['from'], message['from'])
         if isinstance(message['text'], list):

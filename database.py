@@ -17,7 +17,8 @@ class Message(Base):
     __tablename__ = 'message'
 
     # 表的结构
-    id = Column(INTEGER, primary_key=True)
+    _id = Column(INTEGER, primary_key=True)
+    id = Column(INTEGER)
     link = Column(TEXT)
     type = Column(TEXT)  # 文本、图像、视频、音频、语音
     category = Column(TEXT)  # 分类
