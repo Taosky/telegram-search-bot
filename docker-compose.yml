@@ -12,11 +12,12 @@ services:
             - 9968:9968
         environment:
             - BOT_MODE=webhook  # polling / webhook (webhook模式请查看Caddyfile)
-            - BOT_TOKEN=xxxx:xxxxx # Telegram Bot Token 
+            - BOT_TOKEN=xxxx:xxxxx # Telegram Bot Token
+            - CACHE_TIME=300
             # 如使用polling模式, 下面的内容不用修改
             - URL_PATH=test     # webhook模式的路径
             - HOOK_URL=https://hook.example.xyz/test # webhook完整url
-    
+
     # polling模式可将caddy部分注释掉
     caddy:
         container_name: caddy
