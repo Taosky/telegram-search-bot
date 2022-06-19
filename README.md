@@ -49,6 +49,9 @@
 - Inline Mode placeholder修改需要重启客户端
  
 ## Update
+####2022-06-19
+- 修复存在bot未授权群组时，搜索消息失败的问题
+
 #### 2022-06-15
 - 修复导入历史记录Chat ID不匹配的问题
 - 修复Message ID重复的问题
