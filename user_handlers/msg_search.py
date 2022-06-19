@@ -59,6 +59,8 @@ def inline_caps(update, context):
             chat_member= context.bot.get_chat_member(chat_id=chat.id, user_id=from_user_id)
         except telegram.error.BadRequest:
             continue
+        except telegram.error.Unauthorized:
+            continue
         if chat_member.status != 'left' and chat_member.status != 'kicked':
             filter_chats.append((chat.id,chat.title))
 
