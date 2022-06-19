@@ -2,12 +2,14 @@ import math
 import re
 import html
 import telegram
+import os
 from telegram import InlineQueryResultArticle, InputTextMessageContent
 from telegram.ext import InlineQueryHandler
 from database import User, Message, Chat, DBSession
 from sqlalchemy import and_
 
 SEARCH_PAGE_SIZE = 25
+CACHE_TIME = int(os.getenv('CACHE_TIME'))
 
 
 def search_messages(keywords, page, filter_chats):
@@ -34,7 +36,7 @@ def search_messages(keywords, page, filter_chats):
             msg_text = '[{}]'.format(message.type)
         else:
             msg_text = message.text
-        
+
         if msg_text == '':
             continue
         messages.append(
@@ -91,10 +93,10 @@ def inline_caps(update, context):
                 description=message['date'].strftime("%Y-%m-%d").ljust(40) + message['user'] + '@' +message['chat'],
                 input_message_content=InputTextMessageContent(
                     '{}<a href="{}">「From {}」</a>'.format(html.escape(message['text']), message['link'], message['user']),parse_mode='html'
-                    ) 
+                    )
             )
         )
-    context.bot.answer_inline_query(update.inline_query.id, results)
+    context.bot.answer_inline_query(update.inline_query.id, results, cache_time=CACHE_TIME)
 
 
 handler = InlineQueryHandler(inline_caps)
