@@ -15,7 +15,7 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持分词。本项目
 	- [Use In Group](#use-in-group)
 	- [Import Message History](#import-message-history)
 - [Tips](#tips)
-- [Update Records](#update-recors)
+- [Update Records](#update-records)
 - [Contributors](#contributors)
 - [License](#license)
 
