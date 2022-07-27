@@ -1,9 +1,26 @@
-
 # telegram-search-bot
 
-为了解决Telegram中文搜索相关问题而写的机器人，后面可能添加更多功能。
+一个支持CJK聊天记录搜索的Telegram Bot
+
+Telegram自带搜索对CJK的支持仅限于整句，不支持分词。本项目通过存储聊天记录，进行数据库查询，解决搜索问题。
+
+
+## Nav
+
+- [Feature](#eature)
+- [Requirements](#requirements)
+- [Usage](#usage)
+	- [Create Bot](#create-bot)
+	- [Docker Build And Run](#docker-build-and-run)
+	- [Use In Group](#use-in-group)
+	- [Import Message History](#import-message-history)
+- [Tips](#tips)
+- [Update Records](#update-recors)
+- [Contributors](#contributors)
+- [License](#license)
 
 ## Feature
+
 - 消息记录搜索
 - 消息链接定位
 - 支持多个群组
@@ -17,20 +34,20 @@
 
 ## Usage
 
-### 机器人创建设置
+### Create Bot
 0. 与[@botfather](https://t.me/botfather)对话按照步骤创建Bot，记录`token`备用
 1. 设置Inline Mode: 选择你的Bot进入Bot Settings，Inline Mode开启，Edit inline placeholder，设置为`[keywords] {page}`
 2. 关闭[Privacy mode](https://core.telegram.org/bots#privacy-mode)，选择你的Bot进入Bot Settings，Group Privacy - Turn off
 3. 按照喜好设置其他选项，将Bot添加到Group，设置权限读取发送信息
 
-### Docker构建运行
+### Docker Build And Run
 0. `git clone https://github.com/Taosky/telegram-search-bot.git && cd telegram-search-bot`
 1. `docker build -t taosky/telegram-search-bot:v2 .`
 2. 修改`docker-compose.yml`, 配置运行模式、Bot ID、映射等
 3. 如使用webhook模式，查看Caddyfile进行配置，或手动进行反代设置
 4. `docker-compose up -d`后台执行
 
-### 群内使用
+### Use In Group
 0. 首先要确认是否**超级群组(supergroup)**（右键消息有copy link选项），人数较多的群组应该会自动升级，手动升级需要将群组类型设置为`Public`（立即生效，可再改回Private）
 1. `/start`: 在目标群内启用（**需管理员/创建者**）。
 2. `@your_bot [keywords] {page}`: 用于搜索，`@`无参数为显示历史消息，此时翻页用`* {page}`
@@ -39,7 +56,7 @@
 5. `/stop`: 在目标群内停用记录和搜索功能，消息记录会保存在数据库（**需管理员/创建者**）
 6. `/delete`: 在目标群已停用的情况下，用于删除数据库中的消息记录（**需管理员/创建者**）
 
-### 导入历史记录
+### Import Message History
 0. 导出前确认群组为**超级群组(supergroup)**，否则导入将提示错误。
 1. Telegram桌面客户端，点击群组右上角`Export chat history`，选择JSON格式(仅文本)
 2. `http://127.0.0.1:5006`，选择导出的JSON文件上传。
@@ -48,7 +65,7 @@
 - Inline Mode具有缓存效果，故连续重复搜索可能不会加载新的消息
 - Inline Mode placeholder修改需要重启客户端
  
-## Update
+## Update Records
 #### 2022-06-15
 - 修复导入历史记录Chat ID不匹配的问题
 - 修复Message ID重复的问题
@@ -69,6 +86,9 @@
 
 #### 2022-01-06
 - Docker化
+
+<details>
+<summary>more</summary>
 
 #### 2021-09-20
 - 更新python-telegram-bot库
@@ -102,3 +122,14 @@
 - 存储信息过程中过滤机器人的信息
 - Bot的用户名无需手动设置
 - 修复管理员权限模式下的无权限不能复读的问题。
+
+</details>
+
+## Contributors
+
+<a href="https://github.com/Taosky/telegram-search-bot/graphs/contributors"><img src="https://opencollective.com/telegram-search-bot/contributors.svg?width=890&button=false" /></a>
+
+
+## License
+
+[MIT](LICENSE) © Taosky
