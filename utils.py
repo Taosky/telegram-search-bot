@@ -57,7 +57,16 @@ def read_config():
     f.close()
     return config_dict
 
-def write_config(config_dict):
-    f = open('.config.json','w',encoding='utf-8')
-    json.dump(config_dict, f)
-    f.close()
+
+def check_control_permission(from_user_id):
+    try:
+        config = read_config()
+        if config['enable']:
+            if from_user_id in config['group_admins']:
+                return True
+            else:
+                return False
+        else:
+            return None
+    except:
+        return None
