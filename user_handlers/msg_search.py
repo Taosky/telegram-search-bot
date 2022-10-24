@@ -83,7 +83,7 @@ def inline_caps(update, context):
     results = [InlineQueryResultArticle(
         id='info',
         title='Total:{}. Page {} of {}'.format(count, page, math.ceil(count / SEARCH_PAGE_SIZE)),
-        input_message_content=InputTextMessageContent('/help')
+        input_message_content=InputTextMessageContent(f'/help@{context.bot.get_me().username}')
     )]
     for message in messages:
         results.append(
