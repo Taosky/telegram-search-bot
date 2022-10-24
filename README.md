@@ -61,11 +61,21 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持分词。本项目
 1. Telegram桌面客户端，点击群组右上角`Export chat history`，选择JSON格式(仅文本)
 2. `http://127.0.0.1:5006`，选择导出的JSON文件上传。
 
+### 只允许特定用户启用、停止机器人与删除消息
+0. 编辑 `.config.json` 文件的第二行，将 `false` 改为 `true`
+1. 按照 json 语法在 `group_admins` 字段内添加用户的数字 ID。
+
+**注意，用户仍需在相关群组内为管理员才可以启用、停止机器人与删除消息**
+
 ## Tips
 - Inline Mode具有缓存效果，故连续重复搜索可能不会加载新的消息
 - Inline Mode placeholder修改需要重启客户端
  
 ## Update Records
+#### 2022-10-24
+- 优化了在 inline mode下发送 /help 的逻辑
+- 更好的权限控制
+
 #### 2022-06-15
 - 修复导入历史记录Chat ID不匹配的问题
 - 修复Message ID重复的问题
