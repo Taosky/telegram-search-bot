@@ -6,10 +6,10 @@ services:
         image: taosky/telegram-search-bot:v2
         restart: always
         volumes:
-            - ./bot.db:/app/bot.db
+            - ./:/app/
         ports:
-            - 5006:5006
-            - 9968:9968
+            - "5006:5006"
+            - "9968:9968"
         environment:
             - BOT_MODE=webhook  # polling / webhook (webhook模式请查看Caddyfile)
             - BOT_TOKEN=xxxx:xxxxx # Telegram Bot Token
