@@ -92,7 +92,7 @@ def inline_caps(update, context):
                 title='{}'.format(message['text'][:100]),
                 description=message['date'].strftime("%Y-%m-%d").ljust(40) + message['user'] + '@' +message['chat'],
                 input_message_content=InputTextMessageContent(
-                    '{}<a href="{}">「From {}」</a>'.format(html.escape(message['text']), message['link'], message['user']),parse_mode='html'
+                    '「{}」\n\n<a href="{}">Via {}</a>'.format(html.escape(message['text']), message['link'], message['user']),parse_mode='html '
                     )
             )
         )
