@@ -70,27 +70,27 @@ def store_message(update, context):
     msg_link = update.message.link
     chat_id = update.message.chat.id
     chat_title = update.message.chat.title
-    msg_text = update.message.text if update.message.text else ''
-    msg_video = update.message.video.file_id if update.message.video else ''
+
+    msg_photo = msg_video = msg_audio = msg_text = msg_voice = ''
     if update.message.photo:
         photo_sizes = [photo_size_info.file_size for photo_size_info in update.message.photo]
         msg_photo = update.message.photo[photo_sizes.index(max(photo_sizes))].file_id
-    else:
-        msg_photo = ''
-
-    msg_audio = update.message.audio.file_id if update.message.audio else ''
-    msg_voice = update.message.voice.file_id if update.message.voice else ''
-
-    if msg_text:
-        msg_type = 'text'
-    elif msg_video:
-        msg_type = 'video'
-    elif msg_photo:
+        msg_text = update.message.caption if update.message.caption else ''
         msg_type = 'photo'
-    elif msg_audio:
+    elif update.message.video:
+        msg_video = update.message.video.file_id if update.message.video else ''
+        msg_text = update.message.caption if update.message.caption else ''
+        msg_type = 'video'
+    elif update.message.audio:
+        msg_audio = update.message.audio.file_id if update.message.audio else ''
+        msg_text = update.message.caption if update.message.caption else ''
         msg_type = 'audio'
-    elif msg_voice:
+    elif update.message.voice:
+        msg_voice = update.message.voice.file_id if update.message.voice else ''
         msg_type = 'voice'
+    elif update.message.text:
+        msg_text = update.message.text if update.message.text else ''
+        msg_type = 'text'
     else:
         msg_type = 'unknown'
 
