@@ -36,7 +36,6 @@ def insert_message(msg_id, msg_link, msg_text, msg_video, msg_photo, msg_audio, 
 
 
 def store_message(update, context):
-    print(update.message)
     session = DBSession()
     chat_ids = [chat.id for chat in session.query(Chat) if chat.enable]
     if update.effective_chat.id not in chat_ids \
