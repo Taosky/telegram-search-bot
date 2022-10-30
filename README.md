@@ -73,6 +73,10 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持分词。本项目
 - Inline Mode placeholder修改需要重启客户端
  
 ## Update Records
+#### 2022-10-30
+- 支持索引频道、匿名管理消息。
+- 修复了一些 BUG
+
 #### 2022-10-24
 - 优化了在 inline mode下发送 /help 的逻辑
 - 更好的权限控制
