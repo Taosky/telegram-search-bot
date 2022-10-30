@@ -90,7 +90,7 @@ def inline_caps(update, context):
             InlineQueryResultArticle(
                 id=message['id'],
                 title='{}'.format(message['text'][:100]),
-                description=message['date'].strftime("%Y-%m-%d").ljust(40) + message['user'] + '@' +message['chat'],
+                description=message['date'].strftime("%Y-%m-%d").ljust(40) + str(message['user']) + '@' +message['chat'],
                 input_message_content=InputTextMessageContent(
                     '「{}」<a href="{}">Via {}</a>'.format(html.escape(message['text']), message['link'], message['user']),parse_mode='html'
                     )
