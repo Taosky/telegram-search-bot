@@ -3,7 +3,7 @@ import re
 import html
 import telegram
 import os
-from telegram import InlineQueryResultArticle, InputTextMessageContent
+from telegram import InlineQueryResultArticle, InputTextMessageContent, InlineQueryResultCachedSticker, InlineQueryResultCachedPhoto
 from telegram.ext import InlineQueryHandler
 from database import User, Message, Chat, DBSession
 from sqlalchemy import and_
@@ -64,6 +64,7 @@ def inline_caps(update, context):
     chats = session.query(Chat)
     if not chats:
         return
+
     filter_chats = []
     for chat in chats:
         if not chat.enable:
@@ -74,13 +75,14 @@ def inline_caps(update, context):
             continue
         except telegram.error.Unauthorized:
             continue
+
         if chat_member.status != 'left' and chat_member.status != 'kicked':
             filter_chats.append((chat.id, chat.title))
 
     query = update.inline_query.query
+
     if not query:
         keywords, page = None, 1
-
     elif re.match(' *\* +(\d+)', query):
         keywords, page = None, int(re.match('\* +(\d+)', query).group(1))
     else:
@@ -90,12 +92,25 @@ def inline_caps(update, context):
             keywords.pop()
         else:
             page = 1
+
     messages, count = search_messages(keywords, page, filter_chats)
-    results = [InlineQueryResultArticle(
-        id='info',
-        title='Total:{}. Page {} of {}'.format(count, page, math.ceil(count / SEARCH_PAGE_SIZE)),
-        input_message_content=InputTextMessageContent(f'/help@{context.bot.get_me().username}')
-    )]
+
+    if count == 0:
+        results = [
+            InlineQueryResultArticle(
+                id='empty',
+                title='好像没有查询到任何结果呢？',
+                description='Attention! 不要点击任何按钮，否则会发送空消息。',
+                input_message_content=InputTextMessageContent('.')
+            )]
+    else:
+        results = [InlineQueryResultArticle(
+            id='info',
+            title='Total:{}. Page {} of {}'.format(count, page, math.ceil(count / SEARCH_PAGE_SIZE)),
+            description='Attention! 这只是一条提示消息，不要点击它，否则会发送 /help 消息',
+            input_message_content=InputTextMessageContent(f'/help@{context.bot.get_me().username}')
+        )]
+
     for message in messages:
         results.append(
             InlineQueryResultArticle(
