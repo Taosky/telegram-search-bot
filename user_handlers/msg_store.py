@@ -1,3 +1,5 @@
+import datetime
+
 from telegram.ext import MessageHandler, Filters
 from database import DBSession, Message, User, Chat
 
@@ -37,16 +39,15 @@ def insert_message(msg_id, msg_link, msg_text, msg_video, msg_photo, msg_audio, 
 
 def update_message(from_chat, msg_id, msg_text):
     session = DBSession()
-    session.query(Message)\
-        .filter(Message.from_chat.is_(from_chat))\
-        .filter(Message.id.is_(msg_id))\
+    session.query(Message) \
+        .filter(Message.from_chat.is_(from_chat)) \
+        .filter(Message.id.is_(msg_id)) \
         .update({"text": msg_text})
     session.commit()
     session.close()
 
 
 def store_message(update, context):
-    print(update)
     session = DBSession()
     chat_ids = [chat.id for chat in session.query(Chat) if chat.enable]
     if update.effective_chat.id not in chat_ids:
@@ -62,7 +63,7 @@ def store_message(update, context):
     '''
     if update.edited_message:
         # 判断被编辑消息的间隔
-        if update.edited_message.edit_date - update.edited_message.date > 120:
+        if (update.edited_message.edit_date - update.edited_message.date).seconds > 120:
             return
 
         if update.edited_message.text:
