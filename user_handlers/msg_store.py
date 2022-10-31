@@ -79,7 +79,7 @@ def store_message(update, context):
         update_message(chat_id, msg_id, msg_text)
         return
 
-    if update.message.via_bot:
+    if update.message.via_bot.id == context.bot.get_me().username:
         return
     '''
     这里的 if 判断发言是用户还是频道或者是 group。
