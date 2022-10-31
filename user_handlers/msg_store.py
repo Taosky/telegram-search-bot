@@ -78,9 +78,10 @@ def store_message(update, context):
 
         update_message(chat_id, msg_id, msg_text)
         return
-
-    if update.message.via_bot.id == context.bot.get_me().username:
-        return
+    
+    if update.message.via_bot:
+        if update.message.via_bot.id == context.bot.get_me().id:
+            return
     '''
     这里的 if 判断发言是用户还是频道或者是 group。
     需要注意的是，这里并不能排除 BOT，因为 Telegram 为了向后兼容，Anon group 实体会附带有一个 from 参数，里面 is_bot 是 true. 如下
