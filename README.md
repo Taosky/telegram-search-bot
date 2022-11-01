@@ -24,6 +24,7 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持分词。本项目
 - 消息记录搜索
 - 消息链接定位
 - 支持多个群组
+- 消息编辑后数据库同步更新
 
 ![搜索](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/search.png)
 
@@ -73,6 +74,13 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持分词。本项目
 - Inline Mode placeholder修改需要重启客户端
  
 ## Update Records
+#### 2022-10-31
+- 支持消息编辑后数据库同步更新
+
+#### 2022-10-30
+- 支持索引频道、匿名管理消息。
+- 修复了一些 BUG
+
 #### 2022-10-24
 - 优化了在 inline mode下发送 /help 的逻辑
 - 更好的权限控制
@@ -82,6 +90,9 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持分词。本项目
 - 修复导入历史记录Chat ID不匹配的问题
 - 修复Message ID重复的问题
 - 修复导入历史记录报错的问题
+
+<details>
+<summary>more</summary>
 
 #### 2022-02-17
 - 记录和搜索支持多个群组（数据库有变化，要重新导入历史记录）
@@ -98,9 +109,6 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持分词。本项目
 
 #### 2022-01-06
 - Docker化
-
-<details>
-<summary>more</summary>
 
 #### 2021-09-20
 - 更新python-telegram-bot库
