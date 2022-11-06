@@ -52,7 +52,7 @@ def insert_messages(chat_id, messages):
         if msg_text =='':
             msg_text == '[其他消息]'
         message_date = datetime.strptime(message['date'], '%Y-%m-%dT%H:%M:%S')
-        new_msg = Message(id=message['id'], link='https://t.me/c/{}/{}'.format(chat_id,message['id']), text=msg_text, video='', photo='',
+        new_msg = Message(id=message['id'], link='https://t.me/c/{}/{}'.format(str(chat_id)[5:],message['id']), text=msg_text, video='', photo='',
                           audio='', voice='', type='text', category='', from_id=message['from_id'][4:], from_chat=chat_id,date=message_date)
         
         session = DBSession()
