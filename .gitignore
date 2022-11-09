@@ -8,3 +8,4 @@ robot_debug.py
 /.config.json
 /.config.json.example
 /bot.db
+.history/
