@@ -18,6 +18,6 @@ jobs:
       env:
         NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       run: |
-        docker build . --file Dockerfile --tag whitecodes/telegram-search-bot:last
+        docker build . --file Dockerfile --tag ghcr.io/whitecodes/telegram-search-bot:last
         docker run ghcr.io/whitecodes/telegram-search-bot:last
         docker push ghcr.io/whitecodes/telegram-search-bot:last
