@@ -50,9 +50,9 @@ def get_bot_id(bot):
 
 
 def read_config():
-    if not os.path.exists('.config.json'):
+    if not os.path.exists('./config/.config.json'):
         return None
-    f = open('.config.json')
+    f = open('./config/.config.json')
     config_dict = json.load(f)
     f.close()
     return config_dict

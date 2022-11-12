@@ -3,10 +3,10 @@ services:
 
     tgbot:
         container_name: tgbot
-        image: taosky/telegram-search-bot:latest
+        image: ghcr.io/taosky/telegram-search-bot:latest
         restart: always
         volumes:
-            - ./:/app/
+            - ./:/app/config
         ports:
             - "5006:5006"
             - "9968:9968"
@@ -18,11 +18,11 @@ services:
             - URL_PATH=test     # webhook模式的路径
             - HOOK_URL=https://hook.example.xyz/test # webhook完整url
 
-    # polling模式可将caddy部分注释掉
-    caddy:
-        container_name: caddy
-        image: caddy:2-alpine
-        restart: unless-stopped
-        volumes:
-            - ./Caddyfile:/etc/caddy/Caddyfile
-        network_mode: "host"
+    # webhook模式需要取消注释并根据需求修改
+    # caddy:
+    #     container_name: caddy
+    #     image: caddy:2-alpine
+    #     restart: unless-stopped
+    #     volumes:
+    #         - ./Caddyfile:/etc/caddy/Caddyfile
+    #     network_mode: "host"

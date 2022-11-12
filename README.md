@@ -2,24 +2,25 @@
 
 一个支持CJK聊天记录搜索的Telegram Bot
 
-Telegram自带搜索对CJK的支持仅限于整句，不支持分词。本项目通过存储聊天记录，进行数据库查询，解决搜索问题。
+Telegram自带搜索对CJK的支持仅限于整句，不支持关键词。本项目通过存储聊天记录，进行数据库查询，解决搜索问题。
 
 
-## Nav
+## 目录
 
-- [Feature](#eature)
-- [Requirements](#requirements)
-- [Usage](#usage)
-	- [Create Bot](#create-bot)
-	- [Docker Build And Run](#docker-build-and-run)
-	- [Use In Group](#use-in-group)
-	- [Import Message History](#import-message-history)
-- [Tips](#tips)
-- [Update Records](#update-records)
-- [Contributors](#contributors)
+- [功能](#功能)
+- [所需环境](#所需环境)
+- [使用方法](#使用)
+	- [创建Bot](#创建Bot)
+	- [使用镜像](#使用镜像)
+	- [群内命令](#群内命令)
+	- [导入历史记录](#导入历史记录)
+	- [只允许特定用户启用、停止机器人与删除消息](#只允许特定用户启用、停止机器人与删除消息)
+- [提示](#提示)
+- [更新记录](#更新记录)
+- [贡献者](#贡献者)
 - [License](#license)
 
-## Feature
+## 功能
 
 - 消息记录搜索
 - 消息链接定位
@@ -30,25 +31,34 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持分词。本项目
 
 ![复读](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/link-mode.png)
 
-## Requirements
+## 所需环境
 - Docker部署(外网/代理环境)
 
-## Usage
+## 使用
 
-### Create Bot
+### 创建Bot
 0. 与[@botfather](https://t.me/botfather)对话按照步骤创建Bot，记录`token`备用
 1. 设置Inline Mode: 选择你的Bot进入Bot Settings，Inline Mode开启，Edit inline placeholder，设置为`[keywords] {page}`
 2. 关闭[Privacy mode](https://core.telegram.org/bots#privacy-mode)，选择你的Bot进入Bot Settings，Group Privacy - Turn off
 3. 按照喜好设置其他选项，将Bot添加到Group，设置权限读取发送信息
 
-### Docker Build And Run
-0. `git clone https://github.com/Taosky/telegram-search-bot.git && cd telegram-search-bot`
-1. `docker build -t taosky/telegram-search-bot:v2 .`
-2. 修改`docker-compose.yml`, 配置运行模式、Bot ID、映射等
+### 使用镜像
+0. **支持amd64、arm64**
+1. 建议新建目录用于存放配置文件和数据库 `mkdir tgbot && cd tgbot`,
+	
+	下载配置文件
+
+	`wget https://github.com/Taosky/telegram-search-bot/raw/master/.config.json.example`
+
+	`wget https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/Caddyfile`
+
+	`wget https://github.com/Taosky/telegram-search-bot/raw/master/docker-compose.yml`
+
+2. 修改`docker-compose.yml`, 配置运行模式、Bot Token等，配置[只允许特定用户启用、停止机器人与删除消息](#只允许特定用户启用、停止机器人与删除消息)(非必要)
 3. 如使用webhook模式，查看Caddyfile进行配置，或手动进行反代设置
 4. `docker-compose up -d`后台执行
 
-### Use In Group
+### 群内命令
 0. 首先要确认是否**超级群组(supergroup)**（右键消息有copy link选项），人数较多的群组应该会自动升级，手动升级需要将群组类型设置为`Public`（立即生效，可再改回Private）
 1. `/start`: 在目标群内启用（**需管理员/创建者**）。
 2. `@your_bot [keywords] {page}`: 用于搜索，`@`无参数为显示历史消息，此时翻页用`* {page}`
@@ -57,34 +67,39 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持分词。本项目
 5. `/stop`: 在目标群内停用记录和搜索功能，消息记录会保存在数据库（**需管理员/创建者**）
 6. `/delete`: 在目标群已停用的情况下，用于删除数据库中的消息记录（**需管理员/创建者**）
 
-### Import Message History
+### 导入历史记录
 0. 导出前确认群组为**超级群组(supergroup)**，否则导入将提示错误。
 1. Telegram桌面客户端，点击群组右上角`Export chat history`，选择JSON格式(仅文本)
-2. `http://127.0.0.1:5006`，选择导出的JSON文件上传。
+2. `http://127.0.0.1:5006`，选择导出的JSON文件上传
 
 ### 只允许特定用户启用、停止机器人与删除消息
 0. 复制 `.config.json.example` 为 `.config.json`
 1. 编辑 `.config.json` 文件的第二行，将 `false` 改为 `true`
-2. 按照 json 语法在 `group_admins` 字段内添加用户的数字 ID。
+2. 按照 json 语法在 `group_admins` 字段内添加用户的数字 ID
 
 **注意，用户仍需在相关群组内为管理员才可以启用、停止机器人与删除消息**
 
-## Tips
+## 提示
 - Inline Mode具有缓存效果，故连续重复搜索可能不会加载新的消息
-- Inline Mode placeholder修改需要重启客户端
+- 修改Inline Mode placeholder需要重启客户端生效
+- Inline Mode可以在任意聊天框使用，可以在收藏夹不公开的进行查询（仍需为群成员才可查询）
  
-## Update Records
-#### 2022-11-06
+## 更新记录
+#### 2022-11-12 
+- 构建镜像到ghcr.io([#22](https://github.com/Taosky/telegram-search-bot/pull/22))
+- 修改了一些小地方并完善配置和说明
+
+#### 2022-11-06 
 - 修复了导入消息链接无法跳转问题
 
-#### 2022-10-31
+#### 2022-10-31 ([#21](https://github.com/Taosky/telegram-search-bot/pull/21))
 - 支持消息编辑后数据库同步更新
 
-#### 2022-10-30
+#### 2022-10-30 ([#21](https://github.com/Taosky/telegram-search-bot/pull/21))
 - 支持索引频道、匿名管理消息。
 - 修复了一些 BUG
 
-#### 2022-10-24
+#### 2022-10-24 ([#19](https://github.com/Taosky/telegram-search-bot/pull/19))
 - 优化了在 inline mode下发送 /help 的逻辑
 - 更好的权限控制
 - 修改了引用消息时引号的用法
@@ -148,7 +163,7 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持分词。本项目
 
 </details>
 
-## Contributors
+## 贡献者
 
 <a href="https://github.com/Taosky/telegram-search-bot/graphs/contributors"><img src="https://opencollective.com/telegram-search-bot/contributors.svg?width=890&button=false" /></a>
 
