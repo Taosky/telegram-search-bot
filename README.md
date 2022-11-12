@@ -2,7 +2,7 @@
 
 一个支持CJK聊天记录搜索的Telegram Bot
 
-Telegram自带搜索对CJK的支持仅限于整句，不支持关键词。本项目通过存储聊天记录，进行数据库查询，解决搜索问题。
+Telegram自带搜索对CJK的支持仅限于整句，不支持关键词（2202年底仍未支持）。本项目通过存储聊天记录，进行数据库查询，解决CJK这类语言的搜索问题。
 
 
 ## 目录
@@ -11,10 +11,10 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持关键词。本项
 - [所需环境](#所需环境)
 - [使用方法](#使用)
 	- [创建Bot](#创建Bot)
-	- [使用镜像](#使用镜像)
-	- [群内命令](#群内命令)
+	- [镜像运行](#使用镜像运行)
+	- [指令控制](#群内指令控制)
 	- [导入历史记录](#导入历史记录)
-	- [只允许特定用户启用、停止机器人与删除消息](#只允许特定用户启用、停止机器人与删除消息)
+	- [限制操作用户](#特定用户启用停止机器人与删除消息)
 - [提示](#提示)
 - [更新记录](#更新记录)
 - [贡献者](#贡献者)
@@ -22,17 +22,20 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持关键词。本项
 
 ## 功能
 
-- 消息记录搜索
-- 消息链接定位
-- 支持多个群组
+- 群聊消息记录和多个关键词搜索（可翻页）
+- 定位消息位置
+- 带限制的命令控制
+- 支持多群组查询（判断是否群成员）
 - 消息编辑后数据库同步更新
 
-![搜索](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/search.png)
+![预览](preview/preview.png)
+![演示](preview/full.gif)
 
-![复读](https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/preview/link-mode.png)
 
 ## 所需环境
-- Docker部署(外网/代理环境)
+- Docker
+- Docker Compose
+- 外网/代理环境
 
 ## 使用
 
@@ -42,7 +45,7 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持关键词。本项
 2. 关闭[Privacy mode](https://core.telegram.org/bots#privacy-mode)，选择你的Bot进入Bot Settings，Group Privacy - Turn off
 3. 按照喜好设置其他选项，将Bot添加到Group，设置权限读取发送信息
 
-### 使用镜像
+### 使用镜像运行
 0. **支持amd64、arm64**
 1. 建议新建目录用于存放配置文件和数据库 `mkdir tgbot && cd tgbot`,
 	
@@ -54,11 +57,11 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持关键词。本项
 
 	`wget https://github.com/Taosky/telegram-search-bot/raw/master/docker-compose.yml`
 
-2. 修改`docker-compose.yml`, 配置运行模式、Bot Token等，配置[只允许特定用户启用、停止机器人与删除消息](#只允许特定用户启用、停止机器人与删除消息)(非必要)
+2. 修改`docker-compose.yml`, 配置运行模式、Bot Token等，配置[特定用户启用停止机器人与删除消息](#特定用户启用停止机器人与删除消息)(非必要)
 3. 如使用webhook模式，查看Caddyfile进行配置，或手动进行反代设置
 4. `docker-compose up -d`后台执行
 
-### 群内命令
+### 群内指令控制
 0. 首先要确认是否**超级群组(supergroup)**（右键消息有copy link选项），人数较多的群组应该会自动升级，手动升级需要将群组类型设置为`Public`（立即生效，可再改回Private）
 1. `/start`: 在目标群内启用（**需管理员/创建者**）。
 2. `@your_bot [keywords] {page}`: 用于搜索，`@`无参数为显示历史消息，此时翻页用`* {page}`
@@ -72,7 +75,7 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持关键词。本项
 1. Telegram桌面客户端，点击群组右上角`Export chat history`，选择JSON格式(仅文本)
 2. `http://127.0.0.1:5006`，选择导出的JSON文件上传
 
-### 只允许特定用户启用、停止机器人与删除消息
+### 特定用户启用停止机器人与删除消息
 0. 复制 `.config.json.example` 为 `.config.json`
 1. 编辑 `.config.json` 文件的第二行，将 `false` 改为 `true`
 2. 按照 json 语法在 `group_admins` 字段内添加用户的数字 ID
@@ -80,6 +83,7 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持关键词。本项
 **注意，用户仍需在相关群组内为管理员才可以启用、停止机器人与删除消息**
 
 ## 提示
+- 如遇查询结果为空，可能是TG的Bug导致，需要把机器人踢出群，重新拉进群
 - Inline Mode具有缓存效果，故连续重复搜索可能不会加载新的消息
 - 修改Inline Mode placeholder需要重启客户端生效
 - Inline Mode可以在任意聊天框使用，可以在收藏夹不公开的进行查询（仍需为群成员才可查询）
@@ -87,7 +91,7 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持关键词。本项
 ## 更新记录
 #### 2022-11-12 
 - 构建镜像到ghcr.io([#22](https://github.com/Taosky/telegram-search-bot/pull/22))
-- 修改了一些小地方并完善配置和说明
+- 一些小改动，完善配置和说明
 
 #### 2022-11-06 
 - 修复了导入消息链接无法跳转问题
@@ -104,13 +108,14 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持关键词。本项
 - 更好的权限控制
 - 修改了引用消息时引号的用法
 
+
+<details>
+<summary>more</summary>
+
 #### 2022-06-15
 - 修复导入历史记录Chat ID不匹配的问题
 - 修复Message ID重复的问题
 - 修复导入历史记录报错的问题
-
-<details>
-<summary>more</summary>
 
 #### 2022-02-17
 - 记录和搜索支持多个群组（数据库有变化，要重新导入历史记录）
