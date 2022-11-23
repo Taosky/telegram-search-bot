@@ -3,7 +3,7 @@ import re
 import html
 import telegram
 import os
-from telegram import InlineQueryResultArticle, InputTextMessageContent, InlineQueryResultCachedSticker, InlineQueryResultCachedPhoto
+from telegram import InlineQueryResultArticle, InputTextMessageContent, InlineQueryResultCachedSticker
 from telegram.ext import InlineQueryHandler
 from database import User, Message, Chat, DBSession
 from sqlalchemy import and_
@@ -93,6 +93,22 @@ def inline_caps(update, context):
         else:
             page = 1
 
+    # 在搜索消息前判断用户是否属于任意启用了 Bot 的群组，如果没有。直接返回一张你不许参加银趴的表情包
+    # 循环 20 次是因为在某些设备上单独一张 sticker 可能会被不正确的拉伸，此外，20 张你不准参加银趴更加生草。
+    if len(filter_chats) == 0:
+        results = []
+        num = 0
+        for i in range(20):
+            results.append(
+                InlineQueryResultCachedSticker(
+                    id=f'unauthorized_sticker_{str(num)}',
+                    sticker_file_id='CAACAgUAAxkDAAEFBIhjffVfXIFyngE4vR2Zg_uDkDS41gACMAsAAoB48FdrYCP5TE3CEh4E'
+                )
+            )
+            num += 1
+        context.bot.answer_inline_query(update.inline_query.id, results, cache_time=CACHE_TIME)
+        return
+
     messages, count = search_messages(keywords, page, filter_chats)
 
     if count == 0:
@@ -101,15 +117,17 @@ def inline_caps(update, context):
                 id='empty',
                 title='好像没有查询到任何结果呢？',
                 description='Attention! 不要点击任何按钮，否则会发送空消息。',
-                input_message_content=InputTextMessageContent('.')
+                input_message_content=InputTextMessageContent('⁤')
             )]
     else:
-        results = [InlineQueryResultArticle(
-            id='info',
-            title='Total:{}. Page {} of {}'.format(count, page, math.ceil(count / SEARCH_PAGE_SIZE)),
-            description='Attention! 这只是一条提示消息，不要点击它，否则会发送 /help 消息',
-            input_message_content=InputTextMessageContent(f'/help@{context.bot.get_me().username}')
-        )]
+        results = [
+            InlineQueryResultArticle(
+                id='info',
+                title='Total:{}. Page {} of {}'.format(count, page, math.ceil(count / SEARCH_PAGE_SIZE)),
+                description='Attention! 这只是一条提示消息，不要点击它，否则会发送 /help 消息',
+                input_message_content=InputTextMessageContent(f'/help@{context.bot.get_me().username}')
+            )
+        ]
 
     for message in messages:
         results.append(
