@@ -1,3 +1,3 @@
 #!/bin/bash
 python robot.py &
-python web_manager.py
+python json_receive.py

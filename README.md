@@ -49,13 +49,15 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持关键词（2202�
 0. **支持amd64、arm64**
 1. 建议新建目录用于存放配置文件和数据库 `mkdir tgbot && cd tgbot`,
 	
-	下载配置文件
+	下载配置文件和功能文件
 
 	`wget https://github.com/Taosky/telegram-search-bot/raw/master/.config.json.example`
 
-	`wget https://raw.githubusercontent.com/Taosky/telegram-search-bot/master/Caddyfile`
+	`wget https://github.com/Taosky/telegram-search-bot/raw/master/Caddyfile`
 
 	`wget https://github.com/Taosky/telegram-search-bot/raw/master/docker-compose.yml`
+
+	`wget https://github.com/Taosky/telegram-search-bot/raw/master/import_history.py`
 
 2. 修改`docker-compose.yml`, 配置运行模式、Bot Token等，配置[特定用户启用停止机器人与删除消息](#特定用户启用停止机器人与删除消息)(非必要)
 3. 如使用webhook模式，查看Caddyfile进行配置，或手动进行反代设置
@@ -73,7 +75,8 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持关键词（2202�
 ### 导入历史记录
 0. 导出前确认群组为**超级群组(supergroup)**，否则导入将提示错误。
 1. Telegram桌面客户端，点击群组右上角`Export chat history`，选择JSON格式(仅文本)
-2. `http://127.0.0.1:5006`，选择导出的JSON文件上传
+2. `python3 import_history.py`，输入JSON文件路径
+
 
 ### 特定用户启用停止机器人与删除消息
 0. 复制 `.config.json.example` 为 `.config.json`
@@ -89,6 +92,13 @@ Telegram自带搜索对CJK的支持仅限于整句，不支持关键词（2202�
 - Inline Mode可以在任意聊天框使用，可以在收藏夹不公开的进行查询（仍需为群成员才可查询）
  
 ## 更新记录
+#### 2022-11-26
+- 优化历史记录导入方式
+- 解决Python Json读入内存爆炸问题
+
+#### 2022-11-23 ([#24](https://github.com/Taosky/telegram-search-bot/pull/24))
+- 一些优化和整活
+
 #### 2022-11-12 
 - 构建镜像到ghcr.io([#22](https://github.com/Taosky/telegram-search-bot/pull/22))
 - 一些小改动，完善配置和说明
