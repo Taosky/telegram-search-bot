@@ -86,7 +86,7 @@ def insert_messages(chat_id, f):
 
 def main():
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind(("127.0.0.1", 5006))
+    server.bind(("0.0.0.0", 5006))
     server.listen(3)
     while True:
         print("listening......")
