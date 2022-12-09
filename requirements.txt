@@ -1,7 +1,7 @@
 APScheduler==3.6.3
 backports.zoneinfo==0.2.1
 cachetools==4.2.2
-certifi==2021.10.8
+certifi==2022.12.7
 click==8.0.3
 Flask==2.0.2
 itsdangerous==2.0.1
