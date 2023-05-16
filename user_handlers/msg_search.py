@@ -11,23 +11,64 @@ from sqlalchemy import and_
 SEARCH_PAGE_SIZE = 25
 CACHE_TIME = int(os.getenv('CACHE_TIME'))
 
+def get_query_matches(query):
+    user, keywords, page = None, None, 1
+    if not query:
+        pass
+    elif re.match(' *\* +(\d+)', query):
+        user, keywords, page = None, None, int(re.match('\* +(\d+)', query).group(1))
+    # 匹配 @用户 * page 形式
+    elif re.match(' *@(.+) +\* +(\d+)', query):
+        r = re.match(' *@(.+) +\* +(\d+)', query)
+        user, keywords, page = r.group(1), None, int(r.group(2))
+    else:
+        keywords = [word for word in query.split(' ')]            
+        if keywords[-1].isdigit():
+            page = int(keywords[-1])
+            keywords.pop()
+        else:
+            page = 1
+        # 第一个字符为 @ 时作特殊处理
+        if len(keywords) >= 1 and keywords[0].startswith('@'):
+            user = keywords[0].lstrip('@')
+            if len(keywords) >= 2:
+                keywords = keywords[1:]
+            else:
+                keywords = None
+    return user, keywords, page
 
-def search_messages(keywords, page, filter_chats):
+
+def search_messages(uname, keywords, page, filter_chats):
     messages = []
     start = (page - 1) * SEARCH_PAGE_SIZE
     stop = page * SEARCH_PAGE_SIZE
     session = DBSession()
     chat_ids = [chat[0] for chat in filter_chats]
     chat_titles = [chat[1] for chat in filter_chats]
+    user_ids = []
+
+    if uname:        
+        user_count = session.query(User).filter(User.fullname.like('%' + uname + '%')).count()
+        if user_count >=1:
+            for user in session.query(User).filter(User.fullname.like('%' + uname + '%')).all():
+                user_ids.append(user.id)
 
     if keywords:
         rule = and_(*[Message.text.like('%' + keyword + '%') for keyword in keywords])
-        count = session.query(Message).filter(rule).filter(Message.from_chat.in_(chat_ids)).count()
-        query = session.query(Message).filter(rule).filter(Message.from_chat.in_(chat_ids))
+        if uname:
+            count = session.query(Message).filter(rule).filter(Message.from_chat.in_(chat_ids)).filter(Message.from_id.in_(user_ids)).count()
+            query = session.query(Message).filter(rule).filter(Message.from_chat.in_(chat_ids)).filter(Message.from_id.in_(user_ids))
+        else:
+            count = session.query(Message).filter(rule).filter(Message.from_chat.in_(chat_ids)).count()
+            query = session.query(Message).filter(rule).filter(Message.from_chat.in_(chat_ids))
     else:
-        count = session.query(Message).filter(Message.from_chat.in_(chat_ids)).count()
-        query = session.query(Message).filter(Message.from_chat.in_(chat_ids))
-
+        if uname:
+            count = session.query(Message).filter(Message.from_chat.in_(chat_ids)).filter(Message.from_id.in_(user_ids)).count()
+            query = session.query(Message).filter(Message.from_chat.in_(chat_ids)).filter(Message.from_id.in_(user_ids))
+        else:
+            count = session.query(Message).filter(Message.from_chat.in_(chat_ids)).count()
+            query = session.query(Message).filter(Message.from_chat.in_(chat_ids))
+        
     for message in query.order_by(Message.date.desc()).slice(start, stop).all():
         user = session.query(User).filter_by(id=message.from_id).one()
         user_fullname = user.fullname
@@ -81,17 +122,7 @@ def inline_caps(update, context):
 
     query = update.inline_query.query
 
-    if not query:
-        keywords, page = None, 1
-    elif re.match(' *\* +(\d+)', query):
-        keywords, page = None, int(re.match('\* +(\d+)', query).group(1))
-    else:
-        keywords = [word for word in query.split(" ")]
-        if keywords[-1].isdigit():
-            page = int(keywords[-1])
-            keywords.pop()
-        else:
-            page = 1
+    user, keywords, page = get_query_matches(query)
 
     # 在搜索消息前判断用户是否属于任意启用了 Bot 的群组，如果没有。直接返回一张你不许参加银趴的表情包
     # 循环 20 次是因为在某些设备上单独一张 sticker 可能会被不正确的拉伸，此外，20 张你不准参加银趴更加生草。
@@ -109,7 +140,7 @@ def inline_caps(update, context):
         context.bot.answer_inline_query(update.inline_query.id, results, cache_time=CACHE_TIME)
         return
 
-    messages, count = search_messages(keywords, page, filter_chats)
+    messages, count = search_messages(user, keywords, page, filter_chats)
 
     if count == 0:
         results = [
