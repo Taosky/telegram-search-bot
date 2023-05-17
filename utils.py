@@ -7,7 +7,7 @@ import os
 
 
 def delay_delete(bot, chat_id, message_id):
-    time.sleep(30)
+    time.sleep(60)
     bot.delete_message(chat_id=chat_id, message_id=message_id)
 
 
