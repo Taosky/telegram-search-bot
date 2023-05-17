@@ -19,12 +19,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      
-      - name: Set up Python 3.x
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-          architecture: 'x64'
 
       - name: Log in to the Container registry
         uses: docker/login-action@v2
