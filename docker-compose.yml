@@ -11,6 +11,12 @@ services:
             - "5006:5006"
             - "9968:9968"
         environment:
+            # 以下为user bot模式, 需要用户为群组成员
+            - USER_BOT=0
+            - USER_BOT_API_ID=29780122
+            - USER_BOT_API_HASH=0d3f875b209cdbd4c47880f4087eaccc
+            - USER_BOT_CHAT_IDS=-1001798965008,
+            # 以下为bot运行设置
             - BOT_MODE=polling  # polling / webhook (webhook模式请查看Caddyfile)
             - BOT_TOKEN=xxxx:xxxxx # Telegram Bot Token
             - CACHE_TIME=300

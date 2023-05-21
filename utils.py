@@ -70,3 +70,23 @@ def check_control_permission(from_user_id):
             return None
     except:
         return None
+
+
+def load_chat_members():
+    with open('.chat_members', 'r') as f:
+        chat_members = json.load(f)
+    return chat_members
+
+
+def write_chat_members(chat_members):
+    with open('.chat_members', 'w') as f:
+        json.dump(chat_members, f)
+
+
+def get_filter_chats(user_id):
+    filter_chats = []
+    chat_members = load_chat_members()
+    for chat_id in chat_members:
+        if user_id in chat_members[chat_id]['members']:
+            filter_chats.append((int(chat_id),chat_members[chat_id]['title']))
+    return filter_chats

@@ -8,6 +8,9 @@ from telegram.ext import InlineQueryHandler
 from database import User, Message, Chat, DBSession
 from sqlalchemy import and_
 
+from utils import get_filter_chats
+
+
 SEARCH_PAGE_SIZE = 25
 CACHE_TIME = int(os.getenv('CACHE_TIME'))
 
@@ -106,19 +109,24 @@ def inline_caps(update, context):
     if not chats:
         return
 
-    filter_chats = []
-    for chat in chats:
-        if not chat.enable:
-            continue
-        try:
-            chat_member = context.bot.get_chat_member(chat_id=chat.id, user_id=from_user_id)
-        except telegram.error.BadRequest:
-            continue
-        except telegram.error.Unauthorized:
-            continue
+    # userbot模式
+    if os.getenv("USER_BOT")=="1":
+        filter_chats = get_filter_chats(from_user_id)
 
-        if chat_member.status != 'left' and chat_member.status != 'kicked':
-            filter_chats.append((chat.id, chat.title))
+    else:
+        filter_chats = []
+        for chat in chats:
+            if not chat.enable:
+                continue
+            try:
+                chat_member = context.bot.get_chat_member(chat_id=chat.id, user_id=from_user_id)
+            except telegram.error.BadRequest:
+                continue
+            except telegram.error.Unauthorized:
+                continue
+
+            if chat_member.status != 'left' and chat_member.status != 'kicked':
+                filter_chats.append((chat.id, chat.title))
 
     query = update.inline_query.query
 

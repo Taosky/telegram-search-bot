@@ -19,13 +19,15 @@ job = updater.job_queue
 job.run_once(set_bot_commands, 30)
 
 # Handle user_handlers
-dispatcher.add_handler(chat_start.handler)
-dispatcher.add_handler(chat_stop.handler)
-dispatcher.add_handler(chat_delete.handler)
-dispatcher.add_handler(bot_help.handler)
-dispatcher.add_handler(chatid_get.handler)
 dispatcher.add_handler(msg_search.handler)
-dispatcher.add_handler(msg_store.handler)
+# Only work when userbot disabled
+if os.getenv("USER_BOT")=="0":
+    dispatcher.add_handler(chat_start.handler)
+    dispatcher.add_handler(chat_stop.handler)
+    dispatcher.add_handler(chat_delete.handler)
+    dispatcher.add_handler(bot_help.handler)
+    dispatcher.add_handler(chatid_get.handler)
+    dispatcher.add_handler(msg_store.handler)
 
 
 if __name__ == '__main__':
