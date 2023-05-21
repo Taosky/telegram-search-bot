@@ -2,9 +2,9 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "dev" ]
+    branches: [ "master" ]
 
 env:
   REGISTRY: ghcr.io
@@ -39,4 +39,4 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ env.REGISTRY }}/taosky/telegram-search-bot:dev
+          tags: ${{ env.REGISTRY }}/taosky/telegram-search-bot:master
