@@ -30,7 +30,7 @@ async def handler(event):
     # 更新群组成员列表作为查询白名单
     chat_members = load_chat_members()
     members = await client.get_participants(current_chat)
-    member_ids = [member.id for member in members]
+    member_ids = [member.id for member in members if not member.deleted]
     chat_id_str = str(chat_id)
     chat_members[chat_id_str] = {}
     chat_members[chat_id_str]['title'] = chat_title
