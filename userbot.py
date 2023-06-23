@@ -6,9 +6,11 @@ from database import DBSession, Message, User, Chat
 import os
 import time
 import logging
+import pathlib
 
 
 SESSION_FILE = './config/anon.session'
+SESSION_LOCK_FILE = './config/anon.session.lock'
 
 
 def get_enabled_chat_ids():
@@ -122,7 +124,7 @@ async def handle_edit_message(event):
     update_message(chat_id, msg_id, msg_text)
 
 async def run_telethon():
-    while not os.path.exists(SESSION_FILE):
+    while not os.path.exists(SESSION_FILE) or os.path.exists(SESSION_LOCK_FILE):
        logging.info('尚未登陆，等待10秒重试...')
        time.sleep(10)
     api_id = int(os.getenv("USER_BOT_API_ID"))
@@ -147,11 +149,15 @@ def run_once():
     if os.path.exists(SESSION_FILE):
         print('session已存在，如需重新登陆，删除配置文件夹下的anon.session文件')
     else:
+        pathlib.Path(SESSION_LOCK_FILE).touch()
         api_id = int(os.getenv("USER_BOT_API_ID"))
         api_hash = os.getenv("USER_BOT_API_HASH")
         client = TelegramClient(SESSION_FILE, api_id, api_hash)
         # 启动客户端
         client.start()
+
+        time.sleep(5)
+        os.remove(SESSION_LOCK_FILE)
 
 
 if __name__ == '__main__':
