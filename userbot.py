@@ -25,6 +25,15 @@ def insert_message(msg_id, msg_link, msg_text, from_id, from_chat, date):
     session.commit()
     session.close()
 
+def update_message(from_chat, msg_id, msg_text):
+    session = DBSession()
+    session.query(Message) \
+        .filter(Message.from_chat.is_(from_chat)) \
+        .filter(Message.id.is_(msg_id)) \
+        .update({"text": msg_text})
+    session.commit()
+    session.close()
+
 
 def insert_or_update_user(user_id, fullname, username):
     session = DBSession()
@@ -88,6 +97,28 @@ async def handle_new_message(event, client):
         # 更新用户信息
         insert_or_update_user(user_id, sender_fullname, sender_username)
 
+async def handle_edit_message(event):
+    current_chat = await event.get_chat()
+    # 跳过非群组消息
+    if not hasattr(current_chat, 'title'):
+        return
+    chat_id = current_chat.id
+    listen_chat_ids = get_enabled_chat_ids()
+    if chat_id > 0:
+        fixed_id = int('-100' + str(chat_id))
+        if fixed_id in listen_chat_ids:
+            chat_id = fixed_id
+    # 跳过无关群组消息
+    if chat_id not in listen_chat_ids:
+        return
+    # 修改后的消息
+    edited_message = event.message
+    if (edited_message.edit_date - edited_message.date).seconds > 120:
+        return
+    msg_id = edited_message.id
+    msg_text = edited_message.message
+
+    update_message(chat_id, msg_id, msg_text)
 
 async def run_telethon():
     api_id = int(os.getenv("USER_BOT_API_ID"))
@@ -96,6 +127,8 @@ async def run_telethon():
     # 监听处理新消息
     client.add_event_handler(lambda event: handle_new_message(
         event, client), events.NewMessage)
+    # 监听处理消息修改
+    client.add_event_handler(handle_edit_message, events.MessageEdited)
     # 启动客户端
     await client.start()
     # 保存登陆用户到本地，作为管理用户（仅userbot模式下）
