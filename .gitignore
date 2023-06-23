@@ -11,3 +11,4 @@ robot_debug.py
 /bot.db
 .history/
 config/
+.userbot_*
