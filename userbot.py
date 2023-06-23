@@ -4,6 +4,7 @@ from utils import write_chat_members, load_chat_members, update_userbot_admin_id
 from database import DBSession, Message, User, Chat
 
 import os
+import time
 import logging
 
 
@@ -121,6 +122,9 @@ async def handle_edit_message(event):
     update_message(chat_id, msg_id, msg_text)
 
 async def run_telethon():
+    while not os.path.exists(SESSION_FILE):
+       logging.info('尚未登陆，等待10秒重试...')
+       time.sleep(10)
     api_id = int(os.getenv("USER_BOT_API_ID"))
     api_hash = os.getenv("USER_BOT_API_HASH")
     client = TelegramClient(SESSION_FILE, api_id, api_hash)
