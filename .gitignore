@@ -1,6 +1,7 @@
 .eggs/
 __pycache__/
 .idea
+.vscode
 config.py
 venv
 .DS_Store
@@ -9,3 +10,4 @@ robot_debug.py
 /.config.json.example
 /bot.db
 .history/
+config/
