@@ -1,7 +1,5 @@
 from telegram.ext import CommandHandler
 from utils import auto_delete
-import logging
-
 
 @auto_delete
 def get_chat_id(update, context):

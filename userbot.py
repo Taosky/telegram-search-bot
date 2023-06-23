@@ -1,30 +1,59 @@
 from telethon import TelegramClient, events
-from user_handlers import msg_store
-from utils import write_chat_members, load_chat_members
+
+from utils import write_chat_members, load_chat_members, update_userbot_admin_id
+from database import DBSession, Message, User, Chat
 
 import os
-import json
-
-listen_chat_ids = [int(cid)
-                   for cid in os.getenv("USER_BOT_CHAT_IDS").split(',') if cid != '']
-api_id = int(os.getenv("USER_BOT_API_ID"))
-api_hash = os.getenv("USER_BOT_API_HASH")
-
-client = TelegramClient('/app/config/anon', api_id, api_hash)
-
-if not os.path.exists('.chat_members'):
-    with open('.chat_members', 'w') as f:
-        json.dump({}, f)
+import logging
 
 
-@client.on(events.NewMessage(chats=listen_chat_ids))
-async def handler(event):
+SESSION_FILE = './config/anon.session'
+
+
+def get_enabled_chat_ids():
+    session = DBSession()
+    chat_ids = [chat.id for chat in session.query(Chat) if chat.enable]
+    session.close()
+    return chat_ids
+
+
+def insert_message(msg_id, msg_link, msg_text, from_id, from_chat, date):
+    new_msg = Message(id=msg_id, link=msg_link, text=msg_text, video='', photo='', audio='',
+                      voice='', type='text', category='', from_id=from_id, from_chat=from_chat, date=date)
+    session = DBSession()
+    session.add(new_msg)
+    session.commit()
+    session.close()
+
+
+def insert_or_update_user(user_id, fullname, username):
+    session = DBSession()
+    target_user = session.query(User).get(user_id)
+    if not target_user:
+        new_user = User(id=user_id, fullname=fullname, username=username)
+        session.add(new_user)
+        session.commit()
+    elif target_user.fullname != fullname or target_user.username != username:
+        target_user.fullname = fullname
+        target_user.username = username
+        session.commit()
+    session.close()
+
+
+async def handle_new_message(event, client):
     current_chat = await event.get_chat()
+    # 跳过非群组消息
+    if not hasattr(current_chat, 'title'):
+        return
     chat_id = current_chat.id
+    listen_chat_ids = get_enabled_chat_ids()
     if chat_id > 0:
         fixed_id = int('-100' + str(chat_id))
         if fixed_id in listen_chat_ids:
             chat_id = fixed_id
+    # 跳过无关群组消息
+    if chat_id not in listen_chat_ids:
+        return
     chat_title = current_chat.title
 
     # 更新群组成员列表作为查询白名单
@@ -51,21 +80,42 @@ async def handler(event):
         user_id = from_id = event.from_id.user_id
         msg_id = event.id
         msg_link = 'https://t.me/c/{}/{}'.format(str(chat_id)[4:], event.id)
-        msg_photo = msg_video = msg_audio = msg_text = msg_voice = ''
         msg_text = event.message.message
-        msg_type = 'text'
         msg_date = event.date
-        print(msg_date)
-        print(msg_link)
-        print(chat_id)
-        print('\n')
+        logging.info('{} {}'.format(chat_id, msg_link))
         # 存储消息
-        msg_store.insert_message(msg_id, msg_link, msg_text, msg_video, msg_photo, msg_audio, msg_voice, msg_type, from_id, chat_id,
-                                 msg_date)
+        insert_message(msg_id, msg_link, msg_text, from_id, chat_id,  msg_date)
         # 更新用户信息
-        msg_store.insert_or_update_user(
-            user_id, sender_fullname, sender_username)
+        insert_or_update_user(user_id, sender_fullname, sender_username)
 
 
-client.start()
-client.run_until_disconnected()
+async def run_telethon():
+    api_id = int(os.getenv("USER_BOT_API_ID"))
+    api_hash = os.getenv("USER_BOT_API_HASH")
+    client = TelegramClient(SESSION_FILE, api_id, api_hash)
+    # 监听处理新消息
+    client.add_event_handler(lambda event: handle_new_message(
+        event, client), events.NewMessage)
+    # 启动客户端
+    await client.start()
+    # 保存登陆用户到本地，作为管理用户（仅userbot模式下）
+    me = await client.get_me()
+    admin_id = me.id
+    update_userbot_admin_id(admin_id)
+
+    await client.run_until_disconnected()
+
+
+def run_once():
+    if os.path.exists(SESSION_FILE):
+        print('session已存在，如需重新登陆，删除配置文件夹下的anon.session文件')
+    else:
+        api_id = int(os.getenv("USER_BOT_API_ID"))
+        api_hash = os.getenv("USER_BOT_API_HASH")
+        client = TelegramClient(SESSION_FILE, api_id, api_hash)
+        # 启动客户端
+        client.start()
+
+
+if __name__ == '__main__':
+    run_once()

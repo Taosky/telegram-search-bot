@@ -1,6 +1,5 @@
 version: "3.9"
 services:
-
     tgbot:
         container_name: tgbot
         image: ghcr.io/taosky/telegram-search-bot:latest
@@ -11,15 +10,14 @@ services:
             - "5006:5006"
             - "9968:9968"
         environment:
-            # 以下为user bot模式, 需要用户为群组成员
+            # userbot模式, 无需拉机器人进群，但需要登陆用户为群组成员 (中间商传递消息)
             - USER_BOT=0
-            - USER_BOT_API_ID=29780122
-            - USER_BOT_API_HASH=0d3f875b209cdbd4c47880f4087eaccc
-            - USER_BOT_CHAT_IDS=-1001798965008,
-            # 以下为bot运行设置
+            - USER_BOT_API_ID=1234567
+            - USER_BOT_API_HASH=xxxxxxxxx
+            # bot运行模式
             - BOT_MODE=polling  # polling / webhook (webhook模式请查看Caddyfile)
-            - BOT_TOKEN=xxxx:xxxxx # Telegram Bot Token
-            - CACHE_TIME=300
+            - BOT_TOKEN=xxxx:xxxxx # Bot Token
+            - CACHE_TIME=300 # 一般无需修改
             # 如使用polling模式, 下面的内容不用修改
             - URL_PATH=test     # webhook模式的路径
             - HOOK_URL=https://hook.example.xyz/test # webhook完整url
