@@ -8,10 +8,8 @@ Telegram自带搜索对CJK等语言的支持仅限于整句，不支持关键词
 ### 目录
 
 - [功能](#功能)
-- [所需环境](#所需环境)
-- [搭建和配置](#搭建和配置)
+- [安装](#安装)
 - [使用方法](#使用方法)
-- [其他功能](#其他功能)
 - [提示](#提示)
 - [更新记录](#更新记录)
 - [贡献者](#贡献者)
@@ -29,52 +27,14 @@ Telegram自带搜索对CJK等语言的支持仅限于整句，不支持关键词
 ![预览](preview/preview.png)
 ![演示](preview/full.gif)
 
+### 安装
 
-### 所需环境
-- Docker Compose
-- 外网/代理环境
+如无特殊需求参照[doc/quick-start.md](doc/quick-start.md)
 
----
+特殊用法见[doc/advanced-use.md](doc/advanced-use.md)
 
-### 搭建和配置
-
-#### 第一步：创建Bot
-0. 与[@botfather](https://t.me/botfather)对话按照步骤创建Bot，记录`token`备用
-1. 设置Inline Mode: 选择你的Bot进入Bot Settings，Inline Mode开启，Edit inline placeholder，设置为`@{user} [keywords] {page}`
-2. 关闭[Privacy mode](https://core.telegram.org/bots#privacy-mode)，选择你的Bot进入Bot Settings，Group Privacy - Turn off
-3. 按照喜好设置其他选项，将Bot添加到Group，设置权限读取发送信息
-
-#### 第二步：配置运行镜像
-0. **镜像支持amd64、arm64**
-1. 新建目录用于存放配置文件和数据库 `mkdir tgbot && cd tgbot`,
-	
-	下载相关配置文件和功能文件
-
-	`wget https://github.com/Taosky/telegram-search-bot/raw/master/.config.json.example`
-
-	`wget https://github.com/Taosky/telegram-search-bot/raw/master/Caddyfile`
-
-	`wget https://github.com/Taosky/telegram-search-bot/raw/master/docker-compose.yml`
-
-	`wget https://github.com/Taosky/telegram-search-bot/raw/master/import_history.py`
-
-2. 修改`docker-compose.yml`, 配置运行模式、Bot Token等，配置[特定用户启用停止机器人与删除消息](#特定用户启用停止机器人与删除消息)(可选)
-3. 如使用webhook模式，查看Caddyfile进行配置，或手动进行反代设置
-4. `docker-compose up -d`后台执行
-
-#### 第三步：群组内启用Bot
-0. 首先要确认是否**超级群组(supergroup)**（右键消息有copy link选项），人数较多的群组应该会自动升级，手动升级需要将群组类型设置为`Public`（立即生效，可再改回Private）
-1. `/start`: 在目标群内启用（**需管理员/创建者**）
-
-#### 可选：导入历史记录
-0. 导出前确认群组为**超级群组(supergroup)**，否则导入将提示错误。
-1. Telegram桌面客户端，点击群组右上角`Export chat history`，选择JSON格式(仅文本)
-2. `python3 import_history.py`，输入JSON文件路径
-
----
-
-### 使用方法
-0. `@你的Bot @用户名 关键词1 关键词2... 页码`: 用于搜索，以下是几个搜索的例子
+### 使用
+-  `@你的Bot @用户名 关键词1 关键词2... 页码`: 用于搜索，以下是几个搜索的例子
    
 	 `@mybot ` 显示全部记录，默认第`1`页；
 	 
@@ -85,35 +45,13 @@ Telegram自带搜索对CJK等语言的支持仅限于整句，不支持关键词
 	 `@mybot @Taosky 天气 4` 搜索群成员`Taosky`（full name关键词）的包含`天气`关键词的消息记录并翻至第`4`页
 
 
-1. `/help`: 获取搜索帮助
-2. `/chat_id`: 获取当前Chat的数字ID
-
----
-
-### 其他功能
-#### 特定用户启用停止机器人与删除消息
-0. 复制 `.config.json.example` 为 `.config.json`
-1. 编辑 `.config.json` 文件的第二行，将 `false` 改为 `true`
-2. 按照 json 语法在 `group_admins` 字段内添加用户的数字 ID
-
-**注意，用户仍需在相关群组内为管理员才可以启用、停止机器人与删除消息**
+- `/help`: 获取搜索帮助
+- `/chat_id`: 获取当前Chat的数字ID
 
 
-#### 停用和删除记录
-1. `/stop`: 在目标群内停用记录和搜索功能，消息记录会保存在数据库（**需管理员/创建者**）
-2. `/delete`: 在目标群已停用的情况下，用于删除数据库中的消息记录（**需管理员/创建者**）
-
----
-
-### 提示
-- 如遇查询结果为空，可能是TG的Bug导致，需要把机器人踢出群，重新拉进群
-- Inline Mode具有缓存效果，故连续重复搜索可能不会加载新的消息
-- 修改Inline Mode placeholder需要重启客户端生效
-- Inline Mode可以在任意聊天框使用，可以在收藏夹不公开的进行查询（仍需为群成员才可查询）
-
---- 
 
 ### 更新记录
+
 #### 2023-05-17
 - 更新包版本
 - 新增按用户搜索功能
