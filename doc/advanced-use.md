@@ -37,7 +37,7 @@
 
 ```
 
-3. `docker-compose up -d`后台执行后，手动执行`docker exec tgbot python userbot.py`，输入用户名和验证码后登陆。
+3. `docker-compose up -d`后台执行后，手动执行`docker exec -it tgbot python userbot.py`，输入用户名和验证码后登陆。
 
 4. 与bot对话，使用`/start 群组ID`启用，`/stop`、`/delete`同理。
 
