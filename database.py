@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.pool import StaticPool
 
-engine = create_engine('sqlite:////app/config/bot.db',
+engine = create_engine('sqlite:///./config/bot.db',
                        connect_args={'check_same_thread': False},
                        poolclass=StaticPool,
                        echo=False)
