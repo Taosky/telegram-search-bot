@@ -24,9 +24,9 @@
 
 ### UserBot模式
 
-此模式下不需要拉bot进群，但是需要登陆Telegram账号作为中间商传递消息，登陆用户成为命令管理员
+此模式下不需要拉Bot进群，但是需要登陆Telegram账号作为中间商传递消息，登陆用户成为命令管理员
 
-1. 登陆[https://my.telegram.org/auth](https://my.telegram.org/auth)获取Telegram官方的API `ID` 和 `hash`
+1. 登陆 [https://my.telegram.org/auth](https://my.telegram.org/auth) 获取Telegram官方的API `ID` 和 `hash`
 
 2. 修改`docker-compose.yml`
 

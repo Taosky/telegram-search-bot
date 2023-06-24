@@ -1,6 +1,6 @@
 ## 快速搭建
 
-以最简单的方式运行本项目，复杂点的用法详见[doc/advanced.md](doc/advanced.md)
+以最简单的方式运行本项目，复杂点的用法详见[advanced-use.md](advanced-use.md)
 
 ---
 
@@ -12,7 +12,7 @@
 
 3. 关闭[Privacy mode](https://core.telegram.org/bots#privacy-mode)，选择你的Bot进入Bot Settings，Group Privacy - Turn off
 
-4. 按照喜好设置其他选项，将Bot添加到Group，设置权限读取发送信息
+4. 按照喜好设置其他选项，将Bot添加到Group，设置权限读取发送信息（userbot模式不需要加入群组，见[advanced-use.md](advanced-use.md#UserBot模式)）
 
 
 ### 配置运行镜像
