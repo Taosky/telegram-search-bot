@@ -10,7 +10,7 @@ services:
             - "5006:5006"
             - "9968:9968"
         environment:
-            # userbot模式, 无需拉机器人进群，但需要登陆用户为群组成员 (中间商传递消息)
+            # userbot模式, 无需拉机器人进群, 但需要登陆用户为群组成员 (中间商传递消息)
             - USER_BOT=0
             - USER_BOT_API_ID=1234567
             - USER_BOT_API_HASH=xxxxxxxxx
@@ -22,7 +22,16 @@ services:
             - URL_PATH=test     # webhook模式的路径
             - HOOK_URL=https://hook.example.xyz/test # webhook完整url
 
-    # webhook模式需要取消注释并根据需求修改
+    # 可创建多个bot容器, 需要自行修改使用新的配置文件夹
+    #  tgbot2:
+    #   container_name: tgbot
+    #     image: ghcr.io/taosky/telegram-search-bot:latest
+    #     restart: always
+    #     volumes:
+    #     ......
+
+
+    # webhook模式需要用Caddy反代(可不使用自行处理)
     # caddy:
     #     container_name: caddy
     #     image: caddy:2-alpine
