@@ -1,4 +1,5 @@
-from sqlalchemy import Column, INTEGER, TEXT, BOOLEAN, DATETIME, create_engine, Index
+from sqlalchemy import Column, INTEGER, TEXT, BOOLEAN, DATETIME, create_engine
+from sqlalchemy.schema import Index
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.pool import StaticPool
