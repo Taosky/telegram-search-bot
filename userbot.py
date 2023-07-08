@@ -28,7 +28,8 @@ def insert_message(msg_id, msg_link, msg_text, from_id, from_chat, date):
     session.commit()
     session.close()
 
-def update_message(from_chat, msg_id, msg_text):
+
+def update_message(from_chat, from_id, msg_id, msg_text):
     session = DBSession()
     session.query(Message) \
         .filter(Message.from_chat.is_(from_chat)) \
@@ -94,11 +95,14 @@ async def handle_new_message(event, client):
         msg_link = 'https://t.me/c/{}/{}'.format(str(chat_id)[4:], event.id)
         msg_text = event.message.message
         msg_date = event.date
-        logging.info('{} {}'.format(chat_id, msg_link))
+        logging.debug('new_message: chat{} user{} "{}"'.format(
+            chat_id, from_id, msg_text))
+
         # 存储消息
-        insert_message(msg_id, msg_link, msg_text, from_id, chat_id,  msg_date)
+        insert_message(msg_id, msg_link, msg_text, from_id, chat_id, msg_date)
         # 更新用户信息
         insert_or_update_user(user_id, sender_fullname, sender_username)
+
 
 async def handle_edit_message(event):
     current_chat = await event.get_chat()
@@ -119,14 +123,19 @@ async def handle_edit_message(event):
     if (edited_message.edit_date - edited_message.date).seconds > 120:
         return
     msg_id = edited_message.id
+    from_id = event.from_id.user_id
     msg_text = edited_message.message
+
+    logging.debug('edit_message: chat{} user{} "{}"'.format(
+        chat_id, from_id, msg_text))
 
     update_message(chat_id, msg_id, msg_text)
 
+
 async def run_telethon():
     while not os.path.exists(SESSION_FILE) or os.path.exists(SESSION_LOCK_FILE):
-       logging.info('尚未登陆，等待10秒重试...')
-       time.sleep(10)
+        logging.info('尚未登陆，等待10秒重试...')
+        time.sleep(10)
     api_id = int(os.getenv("USER_BOT_API_ID"))
     api_hash = os.getenv("USER_BOT_API_HASH")
     client = TelegramClient(SESSION_FILE, api_id, api_hash)

@@ -8,7 +8,7 @@ from user_jobs.commands_set import set_bot_commands
 from userbot import run_telethon
 from utils import is_userbot_mode
 
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+logging.basicConfig(format='%(asctime)s - %(threadName)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
 bot_token = os.getenv('BOT_TOKEN')
@@ -40,10 +40,12 @@ def run_telethon_thread():
     loop.run_until_complete(run_telethon())
 
 if __name__ == '__main__':
+    
     # 创建一个线程来运行userbot
-    telethon_thread = Thread(target=run_telethon_thread)
-    telethon_thread.start()
-    logging.info('userbot启动...')
+    if is_userbot_mode():
+        telethon_thread = Thread(target=run_telethon_thread, name='Thread-userbot')
+        telethon_thread.start()
+        logging.info('userbot启动...')
     
     # webhook / pollling
     if os.getenv("BOT_MODE") == "webhook":
