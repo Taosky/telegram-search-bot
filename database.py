@@ -1,8 +1,9 @@
-from sqlalchemy import Column, INTEGER, TEXT, BOOLEAN, DATETIME, create_engine
-from sqlalchemy.schema import Index
+from sqlalchemy import Column, INTEGER, TEXT, BOOLEAN, DATETIME, create_engine, Index
+from sqlalchemy.schema import MetaData
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.pool import StaticPool
+from sqlalchemy.exc import OperationalError
 
 engine = create_engine('sqlite:///./config/bot.db',
                        connect_args={'check_same_thread': False},
@@ -10,7 +11,7 @@ engine = create_engine('sqlite:///./config/bot.db',
                        echo=False)
 DBSession = sessionmaker(bind=engine)
 Base = declarative_base()
-
+metadata = MetaData()
 
 class Message(Base):
     # 表的名字
@@ -51,17 +52,19 @@ class Chat(Base):
     title = Column(TEXT)
     enable = Column(BOOLEAN)
 
+Base.metadata.create_all(engine)
 
 # 定义索引
+index_msg_id = Index('idx_message_id', Message.id)
 index_msg_text = Index('idx_message_text', Message.text)
 index_msg_from_id = Index('idx_message_from_id', Message.from_id)
 index_msg_from_chat = Index('idx_message_from_chat', Message.from_chat)
 index_user_fullname = Index('idx_user_fullname', User.fullname)
 
-Base.metadata.create_all(engine, tables=[Message.__table__, User.__table__, Chat.__table__,
-                         index_msg_text, index_msg_from_id, index_msg_from_chat, index_user_fullname])
-
-index_msg_text.create(bind=engine)
-index_msg_from_id.create(bind=engine)
-index_msg_from_chat.create(bind=engine)
-index_user_fullname.create(bind=engine)
+try:
+    index_msg_text.create(bind=engine)
+    index_msg_from_id.create(bind=engine)
+    index_msg_from_chat.create(bind=engine)
+    index_user_fullname.create(bind=engine)
+except OperationalError:
+    pass
