@@ -92,7 +92,8 @@ async def handle_new_message(event, client):
             sender_fullname = sender_username
         user_id = from_id = event.from_id.user_id
         msg_id = event.id
-        msg_link = 'https://t.me/c/{}/{}'.format(str(chat_id)[4:], event.id)
+        link_chat_id = str(chat_id)[4:] if str(chat_id).startswith('-100') else str(chat_id)
+        msg_link = 'https://t.me/c/{}/{}'.format(link_chat_id, event.id)
         msg_text = event.message.message
         msg_date = event.date
         logging.debug('new_message: chat{} user{} "{}"'.format(
