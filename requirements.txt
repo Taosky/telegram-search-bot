@@ -1,6 +1,6 @@
 anyio==3.6.2
 APScheduler==3.6.3
-backports.zoneinfo==0.2.1
+backports.zoneinfo==0.2.1;python_version<"3.9"
 blinker==1.6.2
 cachetools==4.2.2
 certifi==2023.7.22
