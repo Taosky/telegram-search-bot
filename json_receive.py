@@ -9,6 +9,13 @@ BUFFER_SIZE = 1024
 SEPARATOR = "<SEPARATOR>"
 
 
+def strip_user_id(id_):
+    id_str = str(id_)
+    if id_str.startswith('user'):
+        return int(id_str[4:])
+    return int(id_str)
+    
+
 def insert_chat_or_do_nothing(chat_id, title):
     session = DBSession()
     target_chat = session.query(Chat).get(chat_id)
@@ -63,8 +70,10 @@ def insert_messages(chat_id, f):
             if msg_text == '':
                 msg_text == '[其他消息]'
             message_date = datetime.strptime(message['date'], '%Y-%m-%dT%H:%M:%S')
-            new_msg = Message(id=message['id'], link='https://t.me/c/{}/{}'.format(str(chat_id)[4:], message['id']), text=msg_text, video='', photo='',
-                            audio='', voice='', type='text', category='', from_id=message['from_id'][4:], from_chat=chat_id, date=message_date)
+            link_chat_id = chat_id[4:]
+            from_id = strip_user_id(message['from_id'])
+            new_msg = Message(id=message['id'], link='https://t.me/c/{}/{}'.format(link_chat_id, message['id']), text=msg_text, video='', photo='',
+                            audio='', voice='', type='text', category='', from_id=from_id, from_chat=chat_id, date=message_date)
 
             session = DBSession()
             try:
@@ -119,7 +128,7 @@ def main():
         while True:
             line = f.readline()
             if '"id":' in line:
-                group_id = re.findall('\d+', line)[0]
+                group_id = re.findall('\d+|-\d+', line)[0]
             if '"name"' in line:
                 group_name = re.findall(': "(.*)"', line)[0]
             if 'supergroup' in line:
@@ -138,11 +147,13 @@ def main():
             sock.close()
 
         sock.send('导入中...'.encode())
-        edit_id = int(group_id) if group_id.startswith('-') else int(
+        edited_id = int(group_id) if group_id.startswith('-100') else int(
             '-100' + group_id)
-        insert_chat_or_do_nothing(edit_id, group_name)
+        
+        print(edited_id)
+        insert_chat_or_do_nothing(edited_id, group_name)
         success_count, fail_count, fail_messages = insert_messages(
-            edit_id, f)
+            edited_id, f)
         f.close()
         fail_text = ''
         for fail_message in fail_messages:
