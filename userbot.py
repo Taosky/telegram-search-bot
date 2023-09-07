@@ -29,7 +29,7 @@ def insert_message(msg_id, msg_link, msg_text, from_id, from_chat, date):
     session.close()
 
 
-def update_message(from_chat, from_id, msg_id, msg_text):
+def update_message(from_chat, msg_id, msg_text):
     session = DBSession()
     session.query(Message) \
         .filter(Message.from_chat.is_(from_chat)) \
