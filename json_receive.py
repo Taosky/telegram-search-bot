@@ -70,7 +70,7 @@ def insert_messages(chat_id, f):
             if msg_text == '':
                 msg_text == '[其他消息]'
             message_date = datetime.strptime(message['date'], '%Y-%m-%dT%H:%M:%S')
-            link_chat_id = chat_id[4:]
+            link_chat_id = str(chat_id)[4:]
             from_id = strip_user_id(message['from_id'])
             new_msg = Message(id=message['id'], link='https://t.me/c/{}/{}'.format(link_chat_id, message['id']), text=msg_text, video='', photo='',
                             audio='', voice='', type='text', category='', from_id=from_id, from_chat=chat_id, date=message_date)
