@@ -1,5 +1,6 @@
 import socket
 import os
+import time
 
 BUFFER_SIZE = 1024
 SEPARATOR = "<SEPARATOR>"
@@ -15,6 +16,7 @@ def send_file(filepath):
         exit(0)
     filesize = os.path.getsize(filepath)
     client.send(f"{filepath}{SEPARATOR}{filesize}".encode())
+    time.sleep(1)
     print('文件发送中...')
     with open(filepath, 'rb')as f:
         while True:
