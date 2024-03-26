@@ -49,6 +49,10 @@ Telegram自带搜索对CJK等语言的支持仅限于整句, 不支持关键词�
 
 #### 2023-09-07
 
+- start命令出错提示 ([#57](https://github.com/Taosky/telegram-search-bot/issues/57))
+
+#### 2023-09-07
+
 - 修复历史记录导入报错问题
 - 修复编辑消息的更新问题
 
@@ -187,7 +191,7 @@ Telegram自带搜索对CJK等语言的支持仅限于整句, 不支持关键词�
 
 ## 贡献者
 
-`<a href="https://github.com/Taosky/telegram-search-bot/graphs/contributors"><img src="https://opencollective.com/telegram-search-bot/contributors.svg?width=890&button=false" />``</a>`
+<a href="https://github.com/Taosky/telegram-search-bot/graphs/contributors"><img src="https://opencollective.com/telegram-search-bot/contributors.svg?width=890&button=false" /></a>
 
 ## License
 
