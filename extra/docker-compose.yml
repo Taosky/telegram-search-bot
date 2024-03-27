@@ -12,6 +12,7 @@ services:
         environment:
             # Required
             - BOT_TOKEN=xxxx:xxxxx # Bot Token
+            - LANG=zh_CN # Set language (Match with the language folder in the `locale` directory), default to Chinese
             
             # Optional
             ## Userbot mode
