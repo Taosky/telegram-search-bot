@@ -13,10 +13,8 @@ Base = declarative_base()
 
 
 class Message(Base):
-    # 表的名字
     __tablename__ = 'message'
 
-    # 表的结构
     _id = Column(INTEGER, primary_key=True)
     id = Column(INTEGER)
     link = Column(TEXT)
@@ -33,20 +31,16 @@ class Message(Base):
 
 
 class User(Base):
-    # 表的名字
     __tablename__ = 'user'
 
-    # 表的结构
     id = Column(INTEGER, primary_key=True)
     fullname = Column(TEXT)
     username = Column(TEXT)
 
 
 class Chat(Base):
-    # 表的名字
     __tablename__ = 'chat'
 
-    # 表的结构
     id = Column(INTEGER, primary_key=True)
     title = Column(TEXT)
     enable = Column(BOOLEAN)

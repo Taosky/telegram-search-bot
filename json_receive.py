@@ -2,11 +2,14 @@ import socket
 import json
 from database import DBSession, Message, User, Chat
 from datetime import datetime
+from utils import get_text_func
 import re
 
 TEMP_FILE_NAME = 'history_temp.json'
 BUFFER_SIZE = 1024
 SEPARATOR = "<SEPARATOR>"
+
+_ = get_text_func()
 
 
 def strip_user_id(id_):
@@ -68,7 +71,7 @@ def insert_messages(chat_id, f):
                 msg_text = message['text']
 
             if msg_text == '':
-                msg_text == '[其他消息]'
+                msg_text == _('[other msg]')
             message_date = datetime.strptime(message['date'], '%Y-%m-%dT%H:%M:%S')
             link_chat_id = str(chat_id)[4:]
             from_id = strip_user_id(message['from_id'])
@@ -100,7 +103,7 @@ def main():
     while True:
         print("listening......")
         sock, adddr = server.accept()
-        print('{}已连接'.format(adddr))
+        print(_('{}connected').format(adddr))
         received = sock.recv(BUFFER_SIZE).decode()
         try:
             filename, filesize = received.split(SEPARATOR)
@@ -117,7 +120,7 @@ def main():
                 if not bytes_read:
                     break
                 if receivedsize >= filesize:
-                    print('文件接收结束 {} {}MB\n'.format(
+                    print(_('file receive finished {} {}MB\n').format(
                         filename, round(filesize/1024/1024, 2)))
                     break
 
@@ -137,16 +140,16 @@ def main():
                 break
         if not group_name or not group_id:
             f.close()
-            sock.send('JSON文件解析出错!\n'.encode())
+            sock.send(_('JSON read error!\n').encode())
             sock.close()
 
-        sock.send('检查群组信息...\n'.encode())
+        sock.send(_('checking group info...\n').encode())
         if supergroup_flag != 1:
             f.close()
-            sock.send('群组非supergroup!停止导入!\n'.encode())
+            sock.send(_('Not supergroup! stopped!\n').encode())
             sock.close()
 
-        sock.send('导入中...'.encode())
+        sock.send(_('importing...').encode())
         edited_id = int(group_id) if group_id.startswith('-100') else int(
             '-100' + group_id)
         
@@ -158,10 +161,10 @@ def main():
         fail_text = ''
         for fail_message in fail_messages:
             fail_text += '{}\n\t'.format(fail_message)
-        result_text = '\n导入结果\n\t导入群组: {} ({})\n\t导入成功: {}条\n\t导入失败: {}条\n\t{}'.format(
+        result_text = _('\nresult\n\tgroup: {} ({})\n\tsuccess: {}\n\tfail: {}\n\t{}').format(
             group_name, group_id, success_count, fail_count, fail_text)
         sock.sendall(result_text.encode())
 
-        sock.send('\nCtrl+C 直接退出即可'.encode())
+        sock.send(_('\nCtrl+C to exit').encode())
 
 main()

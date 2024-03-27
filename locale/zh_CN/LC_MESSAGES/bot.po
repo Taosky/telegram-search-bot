@@ -1,0 +1,95 @@
+msgid ""
+msgstr ""
+
+msgid "userbot start..."
+msgstr "userbot启动..."
+
+msgid "robot start..."
+msgstr "robot启动..."
+
+msgid "not logged in, waiting 10s to retry..."
+msgstr "尚未登陆, 等待10秒重试..."
+
+msgid "session exists, delete `anon.session` to login again"
+msgstr "session已存在, 如需重新登陆, 删除配置文件夹下的anon.session文件"
+
+msgid "[other msg]"
+msgstr "[其他消息]"
+
+msgid "{}connected"
+msgstr "{}已连接"
+
+msgid "file receive finished {} {}MB\n"
+msgstr "文件接收结束 {} {}MB\n"
+
+msgid "JSON read error!\n"
+msgstr "JSON文件解析出错!\n"
+
+msgid "checking group info...\n"
+msgstr "检查群组信息...\n"
+
+msgid "Not supergroup! stopped!\n"
+msgstr "群组非supergroup!停止导入!\n"
+
+msgid "importing..."
+msgstr "导入中..."
+
+msgid "\nresult\n\tgroup: {} ({})\n\tsuccess: {}\n\tfail: {}\n\t{}"
+msgstr "\n导入结果\n\t导入群组: {} ({})\n\t导入成功: {}条\n\t导入失败: {}条\n\t{}"
+
+msgid "\nCtrl+C to exit"
+msgstr "\nCtrl+C 直接退出即可"
+
+msgid "get search help"
+msgstr "获取搜索帮助"
+
+msgid "get current chat id (group or user)"
+msgstr "获取当前聊天的ID, 即Group ID或User ID"
+
+msgid "start bot in current group ( userbot mode need `start <group_id>`)"
+msgstr "在当前群组启用Bot (userbot模式需 `/start 群组ID`)"
+
+msgid "stop bot in current group (userbot mode need `stop <group_id>`)"
+msgstr "在当前群组停用Bot (userbot模式需 `/stop 群组ID`)"
+
+msgid "delete saved messages if stopped  (userbot mode need `stop <group_id>`)"
+msgstr "删除已停用的聊天记录 (userbot模式需 `/delete 群组ID`)"
+
+msgid "`@%s @username keyowrd1 keyowrd2... page`   to search, samples: \n\n   `@%s `   all messages, page 1\n\n   `@%s * 2`   all messages, page 2; \n\n   `@%s weather 3`   keyword 'weather', page 3; \n\n   `@%s @Taosky weather 4`    keyword 'weather' from user 'Taosky' ,page 4\n"
+msgstr "`@%s @用户名 关键词1 关键词2... 页码`   用于搜索，以下是几个搜索的例子: \n\n   `@%s `   显示全部记录，默认第1页\n\n   `@%s * 2`   显示全部消息记录的第2页; \n\n   `@%s 天气 3`   搜索包含关键词天气的消息记录并翻至第3页; \n\n   `@%s @Taosky 天气 4`    搜索群成员Taosky（部分匹配）的包含天气关键词的消息记录并翻至第4页。\n"
+
+msgid "messages deleted!"
+msgstr "成功删除相关记录"
+
+msgid "not started / not stopped!"
+msgstr "此前未停用或未启用"
+
+msgid "bot started!"
+msgstr "成功启用"
+
+msgid "already started, use /stop to stop bot in current group!"
+msgstr "前期已启用, 停用需使用/stop命令"
+
+msgid "bot restored!"
+msgstr "成功恢复使用"
+
+msgid "failed to read group member, grant bot administrator first (telegram limitation)"
+msgstr "读取群成员信息出错 (Telegram对大群的限制), 授予管理员后再试"
+
+msgid "only work in supergroup!"
+msgstr "仅在超级群组中可用"
+
+msgid "bot stopped, group messages retained, use /delete to remove"
+msgstr "成功停用,记录暂时保留,删除需使用/delete命令"
+
+msgid "already stopped / not started, use /start to start bot in current group!"
+msgstr "此前已停用/未启用,启用需使用/start命令"
+
+msgid "No results found"
+msgstr "好像没有查询到任何结果呢？"
+
+msgid "Attention! Do not click any buttons, otherwise an empty message will be sent"
+msgstr "Attention! 不要点击任何按钮，否则会发送空消息。"
+
+msgid "Attention! This is just a prompt message, do not click on it, otherwise a /help message will be sent"
+msgstr "Attention! 这只是一条提示消息，不要点击它，否则会发送 /help 消息"

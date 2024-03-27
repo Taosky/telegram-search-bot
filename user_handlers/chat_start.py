@@ -2,7 +2,9 @@ from telegram.ext import CommandHandler
 import telegram.error
 
 from database import Chat, DBSession
-from utils import check_control_permission, is_userbot_mode, read_userbot_admin_id
+from utils import check_control_permission, is_userbot_mode, read_userbot_admin_id, get_text_func
+
+_ = get_text_func()
 
 
 def insert_chat_or_enable(chat_id, title):
@@ -12,14 +14,14 @@ def insert_chat_or_enable(chat_id, title):
         new_chat = Chat(id=chat_id, title=title, enable=True)
         session.add(new_chat)
         session.commit()
-        msg_text = '成功启用'
+        msg_text = _('bot started!')
     else:
         if target_chat.enable:
-            msg_text = '前期已启用,停用需使用/stop命令'
+            msg_text = _('already started, use /stop to stop bot in current group!')
         else:
             target_chat.enable = True
             session.commit()
-            msg_text = '成功恢复使用'
+            msg_text = _('bot restored!')
     session.close()
     return msg_text
 
@@ -27,7 +29,7 @@ def insert_chat_or_enable(chat_id, title):
 def start(update, context):
     from_user_id = update.message.from_user.id
 
-    # userbot模式下通过命令加群聊ID的形式设置
+    # Command with userbot mode
     if is_userbot_mode():
         admin_id = read_userbot_admin_id()
         if from_user_id == admin_id and len(context.args) == 1:
@@ -36,17 +38,17 @@ def start(update, context):
                 msg_text = insert_chat_or_enable(int(command_text), '')
                 context.bot.send_message(chat_id=update.effective_chat.id, text=msg_text)
         return
-    # 正常模式直接在对应群聊中使用命令
+    # Command with normal mode
     chat_id = update.effective_chat.id
     chat_title = update.message.chat.title
     
-    # 对成员过多的群组非管理员可能无法读取成员信息
+    # Can not get info if too much members in group
     try:
         chat_member = context.bot.get_chat_member(
             chat_id=chat_id, user_id=from_user_id)
     except telegram.error.BadRequest:
         context.bot.send_message(chat_id=update.effective_chat.id, 
-            text='读取群成员信息出错 (Telegram对大群的限制), 授予管理员后再试')
+            text=_('failed to read group member, grant bot administrator first (telegram limitation)'))
         return
     
     # Check control permission
@@ -60,7 +62,7 @@ def start(update, context):
     else:
         return
     if not update.message.chat.type == 'supergroup':
-        msg_text = '仅在超级群组中可用'
+        msg_text = _('only work in supergroup!')
     else:
         msg_text = insert_chat_or_enable(chat_id, chat_title)
     context.bot.send_message(chat_id=update.effective_chat.id, text=msg_text)
