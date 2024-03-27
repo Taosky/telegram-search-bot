@@ -8,11 +8,12 @@ from telegram.ext import InlineQueryHandler
 from database import User, Message, Chat, DBSession
 from sqlalchemy import and_
 
-from utils import get_filter_chats, is_userbot_mode
+from utils import get_filter_chats, is_userbot_mode, get_text_func
 
+_ = get_text_func()
 
 SEARCH_PAGE_SIZE = 25
-CACHE_TIME = int(os.getenv('CACHE_TIME'))
+CACHE_TIME = 300 if not os.getenv('CACHE_TIME') else int(os.getenv('CACHE_TIME'))
 
 
 def get_query_matches(query):

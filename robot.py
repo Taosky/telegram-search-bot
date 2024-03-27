@@ -50,7 +50,8 @@ if __name__ == '__main__':
         logging.info(_('userbot start...'))
     
     # Webhook / Pollling
-    if os.getenv("BOT_MODE") == "webhook":
+    mode_env = os.getenv("BOT_MODE")
+    if mode_env == "webhook":
         url_path = os.getenv("URL_PATH")
         hook_url = os.getenv("HOOK_URL")
         updater.start_webhook(listen='0.0.0.0',
