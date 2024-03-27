@@ -22,14 +22,14 @@ Telegram's built-in search supports only whole sentences for languages like CJK,
 - Supporting username search
 - Synchronizing database updates after message edits
 
-![preview1](preview/preview.png)
-![preview2](preview/full.gif)
+![preview1](docs/en/preview.png)
+![preview2](docs/en/full.gif)
 
 ### Installation
 
-Refer to [docs/en/quick-start.md](docs/en/quick-start.md) for general installation instructions.
+Refer to [quick-start.md](docs/en/quick-start.md) for general installation instructions.
 
-For advanced usage, see [docs/en/advanced-use.md](docs/en/advanced-use.md)
+For advanced usage, see [advanced-use.md](docs/en/advanced-use.md)
 
 ### Usage
 

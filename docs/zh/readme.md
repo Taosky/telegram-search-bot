@@ -22,8 +22,8 @@ Telegram自带搜索对CJK等语言的支持仅限于整句, 不支持分词查�
 - 支持用户名搜索
 - 消息编辑后数据库同步更新
 
-![预览](/preview/preview.png)
-![演示](/preview/full.gif)
+![预览](preview.png)
+![演示](full.gif)
 
 ### 安装
 
