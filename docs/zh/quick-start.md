@@ -26,8 +26,6 @@
 
 4. `docker-compose up -d`后台执行
 
-5. `docker-compose down`停止, 配合上一条重启
-
 5. 使用`docker-compose pull` 和 `docker-compose up -d --remove-orphans`可更新到最新的镜像 (建议先查看更新内容)
 
 
