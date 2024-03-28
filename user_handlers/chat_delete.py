@@ -18,7 +18,7 @@ def delete_chat_or_do_nothing(chat_id):
             session.commit()
         msg_text = _('messages deleted!')
     else:
-        msg_text = _('not started or not stopped!')
+        msg_text = _('not started / not stopped!')
     session.close()
     return msg_text
 
