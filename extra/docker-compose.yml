@@ -14,15 +14,15 @@ services:
             - BOT_TOKEN=xxxx:xxxxx # Bot Token
             - LANG=zh_CN # Set language (Match with the language folder in the `locale` directory), default to Chinese
             
-            # Optional
+            # Optional (do not change if you dont' understand)
             ## Userbot mode
             - USER_BOT=0
             - USER_BOT_API_ID=1234567
             - USER_BOT_API_HASH=xxxxxxxxx                     
             ## Webhook
             - BOT_MODE=polling  # polling / webhook
-            - URL_PATH=test     # webhook path
-            - HOOK_URL=https://hook.example.xyz/test # webhook full url
+            - URL_PATH=your_token     # webhook path (same as route in Caddyfile)
+            - HOOK_URL=https://hook.example.xyz/your_token # webhook full url
             # Do not modify
             - CACHE_TIME=300
 

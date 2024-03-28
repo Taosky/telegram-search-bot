@@ -35,13 +35,13 @@ For advanced usage, see [advanced-use.md](docs/en/advanced-use.md)
 
 - `@YourBot @Username keyword1 keyword2... page` Here are some examples:
 
-  `@YourBot` Displays all records, defaulting to page 1.
+  `@YourBot` Display all records, defaulting to page 1.
 
-  `@YourBot * 2` Displays all message records on page 2.
+  `@YourBot * 2` Display all message records on page 2.
 
-  `@YourBot weather 3`  Searches for message records containing the keyword `weather` and flips to page 3.
+  `@YourBot weather 3`  Search for message records containing the keyword `weather` and flips to page 3.
 
-  `@mybot @Taosky weather 4` Searches for message records containing the keyword "weather" and the group member "Taosky" (full name) and flips to page 4.
+  `@mybot @Taosky weather 4` Search for message records containing the keyword "weather" and the group member "Taosky" (full name) and flips to page 4.
 
 - `/help`: Get search help.
 
@@ -51,7 +51,7 @@ For advanced usage, see [advanced-use.md](docs/en/advanced-use.md)
 
 #### 2024-03-28
 
-- i18n support (en,zh)
+- i18n support (en_US,zh_CN)
 
 #### 2024-03-26
 
