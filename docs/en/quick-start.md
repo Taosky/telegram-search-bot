@@ -22,7 +22,7 @@ Run this project in the simplest way possible, please refer to [advanced-use.md]
 2. Download Configuration File 
 	`wget https://github.com/Taosky/telegram-search-bot/raw/master/extra/docker-compose.yml`
 
-3. Edit `docker-compose.yml`, change `BOT_TOKEN` value to your bot's token.
+3. Edit `docker-compose.yml`, change `BOT_TOKEN` value to your bot's token, change `LANG` to `en_US` for English version.
 
 4. `docker-compose up -d` to run in background.
 
