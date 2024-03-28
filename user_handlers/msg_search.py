@@ -8,11 +8,12 @@ from telegram.ext import InlineQueryHandler
 from database import User, Message, Chat, DBSession
 from sqlalchemy import and_
 
-from utils import get_filter_chats, is_userbot_mode
+from utils import get_filter_chats, is_userbot_mode, get_text_func
 
+_ = get_text_func()
 
 SEARCH_PAGE_SIZE = 25
-CACHE_TIME = int(os.getenv('CACHE_TIME'))
+CACHE_TIME = 300 if not os.getenv('CACHE_TIME') else int(os.getenv('CACHE_TIME'))
 
 
 def get_query_matches(query):
@@ -22,7 +23,7 @@ def get_query_matches(query):
     elif re.match(' *\* +(\d+)', query):
         user, keywords, page = None, None, int(
             re.match('\* +(\d+)', query).group(1))
-    # 匹配 @用户 * page 形式
+    # Match @user * page 
     elif re.match(' *@(.+) +\* +(\d+)', query):
         r = re.match(' *@(.+) +\* +(\d+)', query)
         user, keywords, page = r.group(1), None, int(r.group(2))
@@ -33,7 +34,7 @@ def get_query_matches(query):
             keywords.pop()
         else:
             page = 1
-        # 第一个字符为 @ 时作特殊处理
+        # Special handling when the first character is @
         if len(keywords) >= 1 and keywords[0].startswith('@'):
             user = keywords[0].lstrip('@')
             if len(keywords) >= 2:
@@ -121,7 +122,7 @@ def inline_caps(update, context):
     if not chats:
         return
 
-    # userbot模式
+    # Userbot mode
     if is_userbot_mode():
         filter_chats = get_filter_chats(from_user_id)
 
@@ -145,8 +146,8 @@ def inline_caps(update, context):
 
     user, keywords, page = get_query_matches(query)
 
-    # 在搜索消息前判断用户是否属于任意启用了 Bot 的群组，如果没有。直接返回一张你不许参加银趴的表情包
-    # 循环 20 次是因为在某些设备上单独一张 sticker 可能会被不正确的拉伸，此外，20 张你不准参加银趴更加生草。
+    # Before searching for messages, check if the user belongs to any group with Bot enabled, if not. Directly return an sticker
+    # Looping 20 times is because on certain devices, a single sticker may be improperly stretched, and in addition, 20 stickers are more interesting
     if len(filter_chats) == 0:
         results = []
         num = 0
@@ -168,8 +169,8 @@ def inline_caps(update, context):
         results = [
             InlineQueryResultArticle(
                 id='empty',
-                title='好像没有查询到任何结果呢？',
-                description='Attention! 不要点击任何按钮，否则会发送空消息。',
+                title=_('No results found'),
+                description=_('Attention! Do not click any buttons, otherwise an empty message will be sent'),
                 input_message_content=InputTextMessageContent('⁤')
             )]
     else:
@@ -178,7 +179,7 @@ def inline_caps(update, context):
                 id='info',
                 title='Total:{}. Page {} of {}'.format(
                     count, page, math.ceil(count / SEARCH_PAGE_SIZE)),
-                description='Attention! 这只是一条提示消息，不要点击它，否则会发送 /help 消息',
+                description=_('Attention! This is just a prompt message, do not click on it, otherwise a /help message will be sent'),
                 input_message_content=InputTextMessageContent(
                     f'/help@{context.bot.get_me().username}')
             )

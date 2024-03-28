@@ -2,6 +2,7 @@ from telethon import TelegramClient, events
 
 from utils import write_chat_members, load_chat_members, update_userbot_admin_id
 from database import DBSession, Message, User, Chat
+from utils import get_text_func
 
 import os
 import time
@@ -11,6 +12,8 @@ import pathlib
 
 SESSION_FILE = './config/anon.session'
 SESSION_LOCK_FILE = './config/anon.session.lock'
+
+_ = get_text_func()
 
 
 def get_enabled_chat_ids():
@@ -55,7 +58,7 @@ def insert_or_update_user(user_id, fullname, username):
 
 async def handle_new_message(event, client):
     current_chat = await event.get_chat()
-    # 跳过非群组消息
+    # Skip non-group
     if not hasattr(current_chat, 'title'):
         return
     chat_id = current_chat.id
@@ -64,12 +67,12 @@ async def handle_new_message(event, client):
         fixed_id = int('-100' + str(chat_id))
         if fixed_id in listen_chat_ids:
             chat_id = fixed_id
-    # 跳过无关群组消息
+    # Skip other groups
     if chat_id not in listen_chat_ids:
         return
     chat_title = current_chat.title
 
-    # 更新群组成员列表作为查询白名单
+    # Update group member list as whitelist
     chat_members = load_chat_members()
     members = await client.get_participants(current_chat)
     member_ids = [member.id for member in members if not member.deleted]
@@ -80,7 +83,7 @@ async def handle_new_message(event, client):
     write_chat_members(chat_members)
 
     sender = await event.get_sender()
-    # 排除bot和inline消息
+    # Skip bot message and inline message
     if not sender.bot and not event.via_bot_id:
         sender_username = sender.username
         sender_fullname = ''
@@ -99,15 +102,15 @@ async def handle_new_message(event, client):
         logging.debug('new_message: chat{} user{} "{}"'.format(
             chat_id, from_id, msg_text))
 
-        # 存储消息
+        # Save message
         insert_message(msg_id, msg_link, msg_text, from_id, chat_id, msg_date)
-        # 更新用户信息
+        # Update user info
         insert_or_update_user(user_id, sender_fullname, sender_username)
 
 
 async def handle_edit_message(event):
     current_chat = await event.get_chat()
-    # 跳过非群组消息
+    # Skip other groups
     if not hasattr(current_chat, 'title'):
         return
     chat_id = current_chat.id
@@ -116,10 +119,10 @@ async def handle_edit_message(event):
         fixed_id = int('-100' + str(chat_id))
         if fixed_id in listen_chat_ids:
             chat_id = fixed_id
-    # 跳过无关群组消息
+    # Skip other groups
     if chat_id not in listen_chat_ids:
         return
-    # 修改后的消息
+    # Read edited message
     edited_message = event.message
     if (edited_message.edit_date - edited_message.date).seconds > 120:
         return
@@ -135,19 +138,19 @@ async def handle_edit_message(event):
 
 async def run_telethon():
     while not os.path.exists(SESSION_FILE) or os.path.exists(SESSION_LOCK_FILE):
-        logging.info('尚未登陆，等待10秒重试...')
+        logging.info(_('not logged in, waiting 10s to retry...'))
         time.sleep(10)
     api_id = int(os.getenv("USER_BOT_API_ID"))
     api_hash = os.getenv("USER_BOT_API_HASH")
     client = TelegramClient(SESSION_FILE, api_id, api_hash)
-    # 监听处理新消息
+    # Listen and handle new message
     client.add_event_handler(lambda event: handle_new_message(
         event, client), events.NewMessage)
-    # 监听处理消息修改
+    # Listen and handle edited message
     client.add_event_handler(handle_edit_message, events.MessageEdited)
-    # 启动客户端
+    # Start client
     await client.start()
-    # 保存登陆用户到本地，作为管理用户（仅userbot模式下）
+    # Save the user logged in as admin (only work in userbot mode)
     me = await client.get_me()
     admin_id = me.id
     update_userbot_admin_id(admin_id)
@@ -157,13 +160,13 @@ async def run_telethon():
 
 def run_once():
     if os.path.exists(SESSION_FILE):
-        print('session已存在，如需重新登陆，删除配置文件夹下的anon.session文件')
+        print(_('session exists, delete `anon.session` to login again'))
     else:
         pathlib.Path(SESSION_LOCK_FILE).touch()
         api_id = int(os.getenv("USER_BOT_API_ID"))
         api_hash = os.getenv("USER_BOT_API_HASH")
         client = TelegramClient(SESSION_FILE, api_id, api_hash)
-        # 启动客户端
+        # Start client
         client.start()
 
         time.sleep(5)

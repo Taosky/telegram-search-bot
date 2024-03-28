@@ -1,195 +1,200 @@
 # telegram-search-bot
 
-一个支持关键词和用户名搜索群聊记录的Telegram Bot
+[中文文档](docs/zh/readme.md)
 
-Telegram自带搜索对CJK等语言的支持仅限于整句, 不支持关键词（3202年中仍未支持）。本项目通过存储聊天记录, 进行数据库查询, 解决搜索问题。
+A Telegram Bot for searching group chat records by keywords and usernames
 
-### 目录
+Telegram's built-in search supports only whole sentences for languages like CJK, and does not support word segmentation. This project solves the search problem by storing chat records and performing database queries.
 
-- [功能](#功能)
-- [安装](#安装)
-- [使用](#使用)
-- [更新记录](#更新记录)
-- [贡献者](#贡献者)
+### Index
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Update Records](#changes)
+- [Contributors](#contributors)
 - [License](#license)
 
-### 功能
+### Features
+- Searching group chat messages by multiple keywords (with pagination)
+- Locating message positions
+- Command control with restrictions
+- Supporting queries across multiple groups (determining whether the user is a group member)
+- Supporting username search
+- Synchronizing database updates after message edits
 
-- 群聊消息记录和多个关键词搜索（可翻页）
-- 定位消息位置
-- 带限制的命令控制
-- 支持多群组查询（判断是否群成员）
-- 支持用户名搜索
-- 消息编辑后数据库同步更新
+![preview1](docs/en/preview.png)
+![preview2](docs/en/full.gif)
 
-![预览](preview/preview.png)
-![演示](preview/full.gif)
+### Installation
 
-### 安装
+Refer to [quick-start.md](docs/en/quick-start.md) for general installation instructions.
 
-如无特殊需求参照[doc/quick-start.md](doc/quick-start.md)
+For advanced usage, see [advanced-use.md](docs/en/advanced-use.md)
 
-特殊用法见[doc/advanced-use.md](doc/advanced-use.md)
+### Usage
 
-### 使用
+- `@YourBot @Username keyword1 keyword2... page` Here are some examples:
 
-- `@你的Bot @用户名 关键词1 关键词2... 页码`: 用于搜索, 以下是几个搜索的例子
+  `@YourBot` Displays all records, defaulting to page 1.
 
-  `@mybot ` 显示全部记录, 默认第 `1`页；
+  `@YourBot * 2` Displays all message records on page 2.
 
-  `@mybot * 2` 显示全部消息记录的第 `2`页；
+  `@YourBot weather 3`  Searches for message records containing the keyword `weather` and flips to page 3.
 
-  `@mybot 天气 3` 搜索包含关键词 `天气`的消息记录并翻至第 `3`页
+  `@mybot @Taosky weather 4` Searches for message records containing the keyword "weather" and the group member "Taosky" (full name) and flips to page 4.
 
-  `@mybot @Taosky 天气 4` 搜索群成员 `Taosky`（full name关键词）的包含 `天气`关键词的消息记录并翻至第 `4`页
-- `/help`: 获取搜索帮助
-- `/chat_id`: 获取当前Chat的数字ID
+- `/help`: Get search help.
 
-### 更新记录
+- `/chat_id`:  Get the numerical ID of the current chat.
+
+### Changes
+
+#### 2024-03-28
+
+- i18n support (en,zh)
 
 #### 2024-03-26
 
-- start命令出错提示 ([#57](https://github.com/Taosky/telegram-search-bot/issues/57))
+- Give tips when /start failed ([#57](https://github.com/Taosky/telegram-search-bot/issues/57))
+
 
 #### 2023-09-07
 
-- 修复历史记录导入报错问题
-- 修复编辑消息的更新问题
+- Fixed error when importing historical records
+- Fixed issue with updating edited messages
 
 #### 2023-09-05
 
-- 修复导入历史记录chat id读取问题
-- 修复userbot模式下消息链接可能错误的问题 ([#41](https://github.com/Taosky/telegram-search-bot/issues/41))
-- python依赖兼容
+- Fixed issue with reading chat IDs when importing historical records
+- Fixed potential incorrect message links in userbot mode ([#41](https://github.com/Taosky/telegram-search-bot/issues/41))
+- Python dependency compatibility
 
 #### 2023-07-08
 
-- 完善日志
-- 增加判断, 仅userbot模式执行对应线程
+- Improved logging
+- Added condition to execute corresponding threads only in userbot mode
 
 #### 2023-07-01
 
-- 目录文件整理
-- 文档修改
+- Organized directory files
+- Modified documentation
 
 #### 2023-06-24
 
-- **端午快落！**
-- 新增userbot模式
-- 拆分完善文档
+- **Happy Dragon Boat Festival!**
+- Added userbot mode
+- Refined documentation
 
 #### 2023-05-17
 
-- 更新包版本
-- 新增按用户搜索功能
-- 尝试把文档写的清晰点
+- Updated package versions
+- Added functionality to search by user
+- Attempted to make documentation clearer
 
-#### 2022-11-26
-
-- 优化历史记录导入方式
-- 解决Python Json读入内存爆炸问题
-
-#### 2022-11-23 ([#24](https://github.com/Taosky/telegram-search-bot/pull/24))
-
-- 一些优化和整活
-
-#### 2022-11-12
-
-- 构建镜像到ghcr.io([#22](https://github.com/Taosky/telegram-search-bot/pull/22))
-- 一些小改动, 完善配置和说明
-
-#### 2022-11-06
-
-- 修复了导入消息链接无法跳转问题
-
-#### 2022-10-31 ([#21](https://github.com/Taosky/telegram-search-bot/pull/21))
-
-- 支持消息编辑后数据库同步更新
-
-#### 2022-10-30 ([#21](https://github.com/Taosky/telegram-search-bot/pull/21))
-
-- 支持索引频道、匿名管理消息。
-- 修复了一些 BUG
 
 <details>
 <summary>more</summary>
 
+#### 2022-11-26
+
+- Optimized historical records import method
+- Resolved memory explosion issue with Python JSON reading
+
+#### 2022-11-23 ([#24](https://github.com/Taosky/telegram-search-bot/pull/24))
+
+- Some optimizations and refinements
+
+#### 2022-11-12
+
+- Built image to ghcr.io ([#22](https://github.com/Taosky/telegram-search-bot/pull/22))
+- Some minor changes, improved configuration and explanations
+
+#### 2022-11-06
+
+- Fixed issue with message links not redirecting correctly
+
+#### 2022-10-31 ([#21](https://github.com/Taosky/telegram-search-bot/pull/21))
+
+- Support for database synchronization after message editing
+- Fixed some bugs
+
+
 #### 2022-10-24 ([#19](https://github.com/Taosky/telegram-search-bot/pull/19))
 
-- 优化了在 inline mode下发送 /help 的逻辑
-- 更好的权限控制
-- 修改了引用消息时引号的用法
+- Optimized logic for sending /help in inline mode
+- Better permission control
+- Changed usage of quotes when referencing messages
 
 #### 2022-06-15
 
-- 修复导入历史记录Chat ID不匹配的问题
-- 修复Message ID重复的问题
-- 修复导入历史记录报错的问题
+- Fixed issue with mismatched Chat IDs when importing historical records
+- Fixed issue with duplicate Message IDs
+- Fixed error when importing historical records
 
 #### 2022-02-17
 
-- 记录和搜索支持多个群组（数据库有变化, 要重新导入历史记录）
-- 搜索时用户名后显示"@群组"用于区分消息来源
-- 在搜索时, 根据用户是否为群组成员筛选搜索结果
+- Records and searches now support multiple groups (database has changed, historical records need to be reimported)
+- User names are now displayed with "@group" to distinguish message sources when searching
+- Search results are now filtered based on whether the user is a member of the group
 
 #### 2022-02-13
 
-- WebHook模式及docker-compose
-- 修复inline mode没有鉴权问题
-- 修复text为空时报错问题
+- WebHook mode and docker-compose
+- Fixed authentication issue in inline mode
+- Fixed error when text is empty
 
 #### 2022-02-08
 
-- Web界面可导入历史消息（5006端口）
+- Web interface for importing historical messages (port 5006)
 
 #### 2022-01-06
 
-- Docker化
+- Dockerized
 
 #### 2021-09-20
 
-- 更新python-telegram-bot库
-- 重构代码, 简化操作
+- Updated python-telegram-bot library
+- Refactored code, simplified operations
 
 #### 2021-07-03
 
-- 支持多关键词搜索
+- Added support for searching multiple keywords
 
 #### 2021-02-04
 
-- 修复inline mode部分关键词结果不显示问题（特定字符导致的解析错误）
+- Fixed issue with some keyword results not displaying in inline mode (caused by parsing errors with specific characters)
 
 #### 2020-01-11 (V1.0)
 
-- 新增导入历史消息记录。（仅初始化数据库可用, 且无法定位）
-- 新增原消息链接模式, 超级群组可用, 通过点击链接定位消息
+- Added ability to import historical message records. (Only available for initializing the database, and cannot be located)
+- Added original message link mode, available for supergroups, allows clicking on links to locate messages
 
 #### 2019-04-27
 
-- 添加代理选项（酸酸乳的socks5貌似不行, http可用）
+- Added proxy option (Shadowsocks' socks5 seems to be not working, http works)
 
 #### 2019-04-02
 
-- 修复重复报时。
-- 完善README。
+- Fixed repeated reporting time issue.
+- Improved README.
 
 #### 2019-03-03
 
-- 修复搜索的页码问题。
+- Fixed pagination issue in searches.
 
 #### 2019-03-02
 
-- 重写了大量代码, 更换MYSQL数据库为SQLITE, 使用ORM, 简化后续的开发及方便用户配置。
-- 增加排除ID的配置
-- 增加图片、视频、语音、音频的复读
-- 增加群员获取数据库的命令
-- 存储信息过程中过滤机器人的信息
-- Bot的用户名无需手动设置
-- 修复管理员权限模式下的无权限不能复读的问题。
+- Rewrote a large amount of code, replaced MYSQL database with SQLITE, used ORM, simplified subsequent development and user configuration.
+- Added configuration for excluding IDs
+- Added repetition of images, videos, voice messages, and audio
+- Added command to obtain database of group members
+- Filter robot information during storage
+- Bot username no longer needs to be set manually
+- Fixed issue where users with no permission under administrator mode could not repeat messages.
 
 </details>
 
-## 贡献者
+## Contributors
 
 <a href="https://github.com/Taosky/telegram-search-bot/graphs/contributors"><img src="https://opencollective.com/telegram-search-bot/contributors.svg?width=890&button=false" /></a>
 

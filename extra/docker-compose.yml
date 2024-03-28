@@ -10,19 +10,24 @@ services:
             - "5006:5006"
             - "9968:9968"
         environment:
-            # userbot模式, 无需拉机器人进群, 但需要登陆用户为群组成员 (中间商传递消息)
+            # Required
+            - BOT_TOKEN=xxxx:xxxxx # Bot Token
+            - LANG=zh_CN # Set language (Match with the language folder in the `locale` directory), default to Chinese
+            
+            # Optional
+            ## Userbot mode
             - USER_BOT=0
             - USER_BOT_API_ID=1234567
-            - USER_BOT_API_HASH=xxxxxxxxx
-            # bot运行模式
-            - BOT_MODE=polling  # polling / webhook (webhook模式请查看Caddyfile)
-            - BOT_TOKEN=xxxx:xxxxx # Bot Token
-            - CACHE_TIME=300 # 一般无需修改
-            # 如使用polling模式, 下面的内容不用修改
-            - URL_PATH=test     # webhook模式的路径
-            - HOOK_URL=https://hook.example.xyz/test # webhook完整url
+            - USER_BOT_API_HASH=xxxxxxxxx                     
+            ## Webhook
+            - BOT_MODE=polling  # polling / webhook
+            - URL_PATH=test     # webhook path
+            - HOOK_URL=https://hook.example.xyz/test # webhook full url
+            # Do not modify
+            - CACHE_TIME=300
 
-    # 可创建多个bot容器, 需要自行修改使用新的配置文件夹
+    ## Can create multiple bot containers, need to modify and use new configuration folders on your own
+
     #  tgbot2:
     #   container_name: tgbot
     #     image: ghcr.io/taosky/telegram-search-bot:latest
@@ -31,7 +36,8 @@ services:
     #     ......
 
 
-    # webhook模式需要用Caddy反代(可不使用自行处理)
+    ## The webhook mode requires Caddy to be used for reverse proxy (or do reverse proxy yourself)
+
     # caddy:
     #     container_name: caddy
     #     image: caddy:2-alpine

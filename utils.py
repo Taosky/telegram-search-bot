@@ -1,6 +1,7 @@
 import re
 from threading import Thread
 import functools
+import gettext
 import time
 import json
 import os
@@ -10,7 +11,12 @@ CONFIG_FILE = './config/.config.json'
 USERBOT_CHAT_MEMBERS_FILE = '.userbot_chat_members'
 USERBOT_ADMIN_FILE = '.userbot_admin'
 
-
+def get_text_func():
+    # Init i18n func
+    gettext.bindtextdomain('bot', 'locale')
+    gettext.textdomain('bot')
+    _ = gettext.gettext
+    return _
 
 def delay_delete(bot, chat_id, message_id):
     time.sleep(60)
@@ -103,6 +109,9 @@ def get_filter_chats(user_id):
 
 
 def is_userbot_mode():
+    env = os.getenv("USER_BOT")
+    if not env:
+        return False
     return os.getenv("USER_BOT")=="1"
 
 

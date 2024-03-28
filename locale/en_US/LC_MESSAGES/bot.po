@@ -1,0 +1,95 @@
+msgid ""
+msgstr ""
+
+msgid "userbot start..."
+msgstr "userbot start..."
+
+msgid "robot start..."
+msgstr "robot start..."
+
+msgid "not logged in, waiting 10s to retry..."
+msgstr "not logged in, waiting 10s to retry..."
+
+msgid "session exists, delete `anon.session` to login again"
+msgstr "session exists, delete `anon.session` to login again"
+
+msgid "[other msg]"
+msgstr "[other msg]"
+
+msgid "{}connected"
+msgstr "{}connected"
+
+msgid "file receive finished {} {}MB\n"
+msgstr "file receive finished {} {}MB\n"
+
+msgid "JSON read error!\n"
+msgstr "JSON read error!\n"
+
+msgid "checking group info...\n"
+msgstr "checking group info...\n"
+
+msgid "Not supergroup! stopped!\n"
+msgstr "Not supergroup! stopped!\n"
+
+msgid "importing..."
+msgstr "importing..."
+
+msgid "\nresult\n\tgroup: {} ({})\n\tsuccess: {}\n\tfail: {}\n\t{}"
+msgstr "\nresult\n\tgroup: {} ({})\n\tsuccess: {}\n\tfail: {}\n\t{}"
+
+msgid "\nCtrl+C to exit"
+msgstr "\nCtrl+C to exit"
+
+msgid "get search help"
+msgstr "get search help"
+
+msgid "get current chat id (group or user)"
+msgstr "get current chat id (group or user)"
+
+msgid "start bot in current group ( userbot mode need `start <group_id>`)"
+msgstr "start bot in current group ( userbot mode need `start <group_id>`)"
+
+msgid "stop bot in current group (userbot mode need `stop <group_id>`)"
+msgstr "stop bot in current group (userbot mode need `stop <group_id>`)"
+
+msgid "delete saved messages if stopped  (userbot mode need `stop <group_id>`)"
+msgstr "delete saved messages if stopped  (userbot mode need `stop <group_id>`)"
+
+msgid "`@%s @username keyowrd1 keyowrd2... page`   to search, samples: \n\n   `@%s `   all messages, page 1\n\n   `@%s * 2`   all messages, page 2; \n\n   `@%s weather 3`   keyword 'weather', page 3; \n\n   `@%s @Taosky weather 4`    keyword 'weather' from user 'Taosky' ,page 4\n"
+msgstr "`@%s @username keyowrd1 keyowrd2... page`   to search, samples: \n\n   `@%s `   all messages, page 1\n\n   `@%s * 2`   all messages, page 2; \n\n   `@%s weather 3`   keyword 'weather', page 3; \n\n   `@%s @Taosky weather 4`    keyword 'weather' from user 'Taosky' ,page 4\n"
+
+msgid "messages deleted!"
+msgstr "messages deleted!"
+
+msgid "not started / not stopped!"
+msgstr "not started / not stopped!"
+
+msgid "bot started!"
+msgstr "bot started!"
+
+msgid "already started, use /stop to stop bot in current group!"
+msgstr "already started, use /stop to stop bot in current group!"
+
+msgid "bot restored!"
+msgstr "bot restored!"
+
+msgid "failed to read group member, grant bot administrator first (telegram limitation)"
+msgstr "failed to read group member, grant bot administrator first (telegram limitation)"
+
+msgid "only work in supergroup!"
+msgstr "only work in supergroup!"
+
+msgid "bot stopped, group messages retained, use /delete to remove"
+msgstr "bot stopped, group messages retained, use /delete to remove"
+
+msgid "already stopped / not started, use /start to start bot in current group!"
+msgstr "already stopped / not started, use /start to start bot in current group!"
+
+msgid "No results found"
+msgstr "No results found"
+
+msgid "Attention! Do not click any buttons, otherwise an empty message will be sent"
+msgstr "Attention! Do not click any buttons, otherwise an empty message will be sent"
+
+msgid "Attention! This is just a prompt message, do not click on it, otherwise a /help message will be sent"
+msgstr "Attention! This is just a prompt message, do not click on it, otherwise a /help message will be sent"
