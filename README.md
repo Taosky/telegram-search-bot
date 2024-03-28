@@ -10,7 +10,7 @@ Telegram's built-in search supports only whole sentences for languages like CJK,
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Update Records](#logs)
+- [Update Records](#changes)
 - [Contributors](#contributors)
 - [License](#license)
 
@@ -35,19 +35,23 @@ For advanced usage, see [advanced-use.md](docs/en/advanced-use.md)
 
 - `@YourBot @Username keyword1 keyword2... page` Here are some examples:
 
-  `@YourBot` displays all records, defaulting to page 1.
+  `@YourBot` Displays all records, defaulting to page 1.
 
-  `@YourBot * 2` displays all message records on page 2.
+  `@YourBot * 2` Displays all message records on page 2.
 
-  `@YourBot weather 3`  searches for message records containing the keyword `weather` and flips to page 3.
+  `@YourBot weather 3`  Searches for message records containing the keyword `weather` and flips to page 3.
 
-  `@mybot @Taosky weather 4` searches for message records containing the keyword "weather" and the group member "Taosky" (full name) and flips to page 4.
+  `@mybot @Taosky weather 4` Searches for message records containing the keyword "weather" and the group member "Taosky" (full name) and flips to page 4.
 
-- `/help`: get search help.
+- `/help`: Get search help.
 
-- `/chat_id`:  get the numerical ID of the current chat.
+- `/chat_id`:  Get the numerical ID of the current chat.
 
 ### Changes
+
+#### 2024-03-28
+
+- i18n support (en,zh)
 
 #### 2024-03-26
 
@@ -87,6 +91,10 @@ For advanced usage, see [advanced-use.md](docs/en/advanced-use.md)
 - Added functionality to search by user
 - Attempted to make documentation clearer
 
+
+<details>
+<summary>more</summary>
+
 #### 2022-11-26
 
 - Optimized historical records import method
@@ -110,8 +118,6 @@ For advanced usage, see [advanced-use.md](docs/en/advanced-use.md)
 - Support for database synchronization after message editing
 - Fixed some bugs
 
-<details>
-<summary>more</summary>
 
 #### 2022-10-24 ([#19](https://github.com/Taosky/telegram-search-bot/pull/19))
 

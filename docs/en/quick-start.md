@@ -35,9 +35,13 @@ Run this project in the simplest way possible, please refer to [advanced-use.md]
 
 	Groups with a large number of people should be automatically upgraded to supergroup, and manual upgrading requires setting the group type to 'Public' (effective immediately, can be changed back to 'Private')
 
-2. `/start`: enable bot in this group (**need admin/creator**)
+2. Ensure that the bot has permission to read messages.
 
-3. The bot will only record chat messages after enabled, If want to import history, see [advanced-use.md](advanced-use.md#Import-History-Records)
+3. `/start`: Enable bot in current group (**need admin/creator send this command**). For groups with thousands of members, it may be necessary to grant bot administrator privileges.
+
+4. The bot will only record chat messages after enabled, If want to import history, see [advanced-use.md](advanced-use.md#Import-History-Records)
+
+5. If the bot not work, try kicking the bot and adding to group again. See [#Tips](#tips) for more info.
 
 ---
 
@@ -48,8 +52,8 @@ Run this project in the simplest way possible, please refer to [advanced-use.md]
 2. `/delete`: Used to delete message records in the database when the target group has been deactivated (**need admin/creator**).
 
 
-### 提示
-- If the query result is empty, it may be caused by a bug in Telegram, and the robot needs to be kicked out of the group and pulled back into the group.
+### Tips
+- If the query result is empty, it may be caused by a bug in Telegram, and the robot needs to be kicked out of the group and added back into the group.
 
 - The inline mode has a caching effect, so repeated searches in a short period of time may not load new messages.
 
