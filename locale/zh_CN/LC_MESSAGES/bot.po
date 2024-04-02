@@ -93,3 +93,9 @@ msgstr "Attention! 不要点击任何按钮，否则会发送空消息。"
 
 msgid "Attention! This is just a prompt message, do not click on it, otherwise a /help message will be sent"
 msgstr "Attention! 这只是一条提示消息，不要点击它，否则会发送 /help 消息"
+
+msgid "fetching history..."
+msgstr "正在获取历史消息..."
+
+msgid "{} messages fetched!"
+msgstr "{}条消息已获取"

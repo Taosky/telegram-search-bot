@@ -1,8 +1,7 @@
 from telethon import TelegramClient, events
-
 from utils import write_chat_members, load_chat_members, update_userbot_admin_id
 from database import DBSession, Message, User, Chat
-from utils import get_text_func
+from utils import get_text_func, group_history_is_fetched, write_history_groups
 
 import os
 import time
@@ -13,7 +12,22 @@ import pathlib
 SESSION_FILE = './config/anon.session'
 SESSION_LOCK_FILE = './config/anon.session.lock'
 
+user_client = None
+
+
 _ = get_text_func()
+
+
+def get_sender_fullname(sender):
+    sender_username = sender.username
+    sender_fullname = ''
+    if sender.first_name:
+        sender_fullname += sender.first_name + ' '
+    if sender.last_name:
+        sender_fullname += sender.last_name
+    if sender_fullname == '':
+        sender_fullname = sender_username
+    return sender_fullname
 
 
 def get_enabled_chat_ids():
@@ -27,8 +41,10 @@ def insert_message(msg_id, msg_link, msg_text, from_id, from_chat, date):
     new_msg = Message(id=msg_id, link=msg_link, text=msg_text, video='', photo='', audio='',
                       voice='', type='text', category='', from_id=from_id, from_chat=from_chat, date=date)
     session = DBSession()
-    session.add(new_msg)
-    session.commit()
+    target_msg = session.query(Message).filter_by(id=msg_id).first()
+    if not target_msg:
+        session.add(new_msg)
+        session.commit()    
     session.close()
 
 
@@ -56,6 +72,24 @@ def insert_or_update_user(user_id, fullname, username):
     session.close()
 
 
+async def fetch_msg_history(chat_id):
+    if not user_client:
+        return
+    count = 0
+    async for message in user_client.iter_messages(chat_id):
+        if not message.text:
+            continue
+        count += 1
+        # Save message
+        link_chat_id = str(chat_id)[4:] if str(chat_id).startswith('-100') else str(chat_id)
+        msg_link = 'https://t.me/c/{}/{}'.format(link_chat_id, message.id)
+        insert_message(message.id, msg_link, message.text, message.from_id.user_id, chat_id, message.date)
+        # Update user info
+        sender = await user_client.get_entity(message.from_id)
+        sender_fullname = get_sender_fullname(sender)
+        insert_or_update_user(message.from_id.user_id, sender_fullname, sender.username)
+    
+
 async def handle_new_message(event, client):
     current_chat = await event.get_chat()
     # Skip non-group
@@ -82,17 +116,18 @@ async def handle_new_message(event, client):
     chat_members[chat_id_str]['members'] = member_ids
     write_chat_members(chat_members)
 
+    # Fetch history if not fetched before
+    if not group_history_is_fetched(chat_id):
+        logging.info(_('fetching history...'))
+        write_history_groups(chat_id)
+        msg_count = await fetch_msg_history(chat_id)
+        logging.info(_('{} messages fetched!').format(''))
+        return  # Skip current message
+
     sender = await event.get_sender()
     # Skip bot message and inline message
     if not sender.bot and not event.via_bot_id:
-        sender_username = sender.username
-        sender_fullname = ''
-        if sender.first_name:
-            sender_fullname += sender.first_name + ' '
-        if sender.last_name:
-            sender_fullname += sender.last_name
-        if sender_fullname == '':
-            sender_fullname = sender_username
+        sender_fullname = get_sender_fullname(sender)
         user_id = from_id = event.from_id.user_id
         msg_id = event.id
         link_chat_id = str(chat_id)[4:] if str(chat_id).startswith('-100') else str(chat_id)
@@ -105,7 +140,7 @@ async def handle_new_message(event, client):
         # Save message
         insert_message(msg_id, msg_link, msg_text, from_id, chat_id, msg_date)
         # Update user info
-        insert_or_update_user(user_id, sender_fullname, sender_username)
+        insert_or_update_user(user_id, sender_fullname, sender.username)
 
 
 async def handle_edit_message(event):
@@ -137,25 +172,27 @@ async def handle_edit_message(event):
 
 
 async def run_telethon():
+    global user_client
+
     while not os.path.exists(SESSION_FILE) or os.path.exists(SESSION_LOCK_FILE):
         logging.info(_('not logged in, waiting 10s to retry...'))
         time.sleep(10)
     api_id = int(os.getenv("USER_BOT_API_ID"))
     api_hash = os.getenv("USER_BOT_API_HASH")
-    client = TelegramClient(SESSION_FILE, api_id, api_hash)
+    user_client = TelegramClient(SESSION_FILE, api_id, api_hash)
     # Listen and handle new message
-    client.add_event_handler(lambda event: handle_new_message(
-        event, client), events.NewMessage)
+    user_client.add_event_handler(lambda event: handle_new_message(
+        event, user_client), events.NewMessage)
     # Listen and handle edited message
-    client.add_event_handler(handle_edit_message, events.MessageEdited)
+    user_client.add_event_handler(handle_edit_message, events.MessageEdited)
     # Start client
-    await client.start()
+    await user_client.start()
     # Save the user logged in as admin (only work in userbot mode)
-    me = await client.get_me()
+    me = await user_client.get_me()
     admin_id = me.id
     update_userbot_admin_id(admin_id)
 
-    await client.run_until_disconnected()
+    await user_client.run_until_disconnected()
 
 
 def run_once():

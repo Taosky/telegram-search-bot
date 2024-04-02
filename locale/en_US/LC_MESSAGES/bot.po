@@ -93,3 +93,9 @@ msgstr "Attention! Do not click any buttons, otherwise an empty message will be 
 
 msgid "Attention! This is just a prompt message, do not click on it, otherwise a /help message will be sent"
 msgstr "Attention! This is just a prompt message, do not click on it, otherwise a /help message will be sent"
+
+msgid "fetching history..."
+msgstr "fetching history..."
+
+msgid "{} messages fetched!"
+msgstr "{} messages fetched!"
