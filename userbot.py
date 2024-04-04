@@ -96,6 +96,9 @@ def insert_or_update_user(user_id, fullname, username):
         new_user = User(id=user_id, fullname=fullname, username=username)
         session.add(new_user)
         session.commit()
+    # do nothing if user exists and new from history
+    elif fullname == 'temp name':
+        pass
     elif target_user.fullname != fullname or target_user.username != username:
         target_user.fullname = fullname
         target_user.username = username
@@ -125,7 +128,7 @@ async def fetch_msg_history(chat_id):
             # Update user info
             # sender = await user_client.get_entity(message.from_id)
             # sender_fullname = get_sender_fullname(sender)
-            insert_or_update_user(message.from_id.user_id, 'temp name', 'temp username')
+            insert_or_update_user(message.from_id.user_id, 'temp name', 'temp_username')
         
         messages = await user_client.get_messages(chat_id, limit=100, offset_id=messages[-1].id-1)
 
