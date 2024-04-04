@@ -11,6 +11,9 @@ CONFIG_FILE = './config/.config.json'
 USERBOT_CHAT_MEMBERS_FILE = '.userbot_chat_members'
 USERBOT_ADMIN_FILE = '.userbot_admin'
 
+HISTORY_GROUPS_FILE = '.hisory_groups'
+
+
 def get_text_func():
     # Init i18n func
     gettext.bindtextdomain('bot', 'locale')
@@ -130,3 +133,40 @@ def read_userbot_admin_id():
     with open(USERBOT_ADMIN_FILE) as f:
         current_id = int(f.read().strip())
     return current_id
+
+
+def group_history_is_fetched(group_id):
+    if not os.path.exists(HISTORY_GROUPS_FILE):
+        return False
+    with open(HISTORY_GROUPS_FILE) as f:
+        group_ids = [line.strip() for line in f.readlines()]
+        if str(group_id) in group_ids:
+            return True
+        return False
+
+
+def write_history_groups(group_id):
+    if not os.path.exists(HISTORY_GROUPS_FILE):
+        with open(HISTORY_GROUPS_FILE,'w') as f:
+            f.write(str(group_id) + '\n')
+        return        
+    with open(HISTORY_GROUPS_FILE) as f:
+        group_ids = [line.strip() for line in f.readlines()]
+        if str(group_id) not in group_ids:
+            group_ids.append(str(group_id))
+    with open(HISTORY_GROUPS_FILE,'w') as f:
+        for groud_id_ in group_ids:
+            f.write(groud_id_ + '\n')
+
+
+def remove_history_group(group_id):
+    if not os.path.exists(HISTORY_GROUPS_FILE):
+        return        
+    with open(HISTORY_GROUPS_FILE) as f:
+        group_ids = [line.strip() for line in f.readlines()]
+        if str(group_id) not in group_ids:
+            return
+    group_ids.remove(str(group_id))
+    with open(HISTORY_GROUPS_FILE,'w') as f:
+        for groud_id_ in group_ids:
+            f.write(groud_id_ + '\n')
