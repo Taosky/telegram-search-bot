@@ -13,9 +13,8 @@ def delete_chat_or_do_nothing(chat_id):
         session.commit()
         related_messages = session.query(
             Message).filter(Message.from_chat == chat_id)
-        for message in related_messages:
-            session.delete(message)
-            session.commit()
+        related_messages.delete(synchronize_session=False)
+        session.commit()
         msg_text = _('messages deleted!')
     else:
         msg_text = _('not started / not stopped!')
