@@ -10,7 +10,7 @@ greenlet==2.0.2
 h11==0.14.0
 httpcore==0.17.0
 httpx==0.24.0
-idna==3.4
+idna==3.7
 importlib-metadata==6.6.0
 itsdangerous==2.1.2
 Jinja2==3.1.2
