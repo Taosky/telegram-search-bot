@@ -200,7 +200,7 @@ def inline_caps(update, context):
             )
         )
     context.bot.answer_inline_query(
-        update.inline_query.id, results, cache_time=CACHE_TIME)
+        update.inline_query.id, results, cache_time=CACHE_TIME, is_personal=True)
 
 
 handler = InlineQueryHandler(inline_caps)
