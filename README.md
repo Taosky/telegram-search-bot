@@ -49,6 +49,9 @@ For advanced usage, see [advanced-use.md](docs/en/advanced-use.md)
 
 ### Changes
 
+#### 2024-06-27
+- Fix message leak to non group members([#65 by JasonKhew96](https://github.com/Taosky/telegram-search-bot/pull/65))
+
 #### 2024-03-28
 
 - i18n support (en_US,zh_CN)
