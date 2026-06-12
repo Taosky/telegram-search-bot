@@ -1,4 +1,6 @@
 # telegram-search-bot
+【Now officially support CJK Search / 官方现已支持 CJK 搜索】
+
 
 [中文文档](docs/zh/readme.md)
 
